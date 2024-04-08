@@ -15,13 +15,27 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 import { auth } from "@/firebase";
 import { AuthType } from "@/types";
-import { saveAuthStateToLocalStorage } from "@/utils/storage";
+import {
+  saveAuthStateToLocalStorage,
+  loadAuthStateFromLocalStorage,
+} from "@/utils/storage";
 
 import invoice from "@/assets/invoice.svg";
+import { useEffect } from "react";
 
 export default function Home() {
   const toast = useToast();
   const router = useRouter();
+
+  useEffect(() => {
+    const existingAuth: AuthType = loadAuthStateFromLocalStorage();
+
+    if (existingAuth) {
+      routeHome();
+    }
+  }, []);
+
+  const routeHome = () => router.push("/home");
 
   const signIn = () =>
     signInWithPopup(auth, new GoogleAuthProvider())
@@ -36,7 +50,7 @@ export default function Home() {
 
         saveAuthStateToLocalStorage(appAuth);
 
-        router.push("/home");
+        routeHome();
       })
       .catch((error) => {
         const errorCode = error.code;
