@@ -20,7 +20,7 @@ import {
   loadAuthStateFromLocalStorage,
 } from "@/utils/storage";
 
-import invoice from "@/assets/invoice.svg";
+import invoice from "@/assets/img/invoice.svg";
 import { useEffect } from "react";
 
 export default function Home() {
