@@ -26,5 +26,5 @@ export function getDate(date: Date) {
 }
 
 export function getTime(date: Date) {
-  return moment(date).format("HH:mm a");
+  return moment(date).format("hh:mm a");
 }

@@ -10,11 +10,13 @@ export type HomeType = {
   name: string;
   hourlyRate: number;
   description: string;
+  uniqueCode: string;
 };
 
 export type DataType = {
-  id: string;
+  id?: string;
   clockIn: Date;
   clockOut: Date;
   home: string;
+  notes: string;
 };

@@ -13,7 +13,6 @@ import {
   GridItem,
   HStack,
   Heading,
-  IconButton,
   Menu,
   MenuButton,
   MenuItem,
@@ -27,19 +26,32 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { FiChevronDown, FiEdit, FiTrash } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType } from "@/types";
+import { getDate, getTime } from "@/utils";
+
+import LogDataModal from "@/components/LogDataModal";
+
+import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
-import { getDate, getTime } from "@/utils";
 
 const dummyHomeData: HomeType = {
   id: "",
   name: "",
   hourlyRate: 0,
   description: "",
+  uniqueCode: "",
+};
+
+const dummyLogData: DataType = {
+  id: "",
+  clockIn: new Date(),
+  clockOut: new Date(),
+  home: "",
+  notes: "",
 };
 
 function Home() {
@@ -49,6 +61,7 @@ function Home() {
   const [activeHome, setActiveHome] = useState<HomeType>(dummyHomeData);
 
   const [data, setData] = useState<DataType[]>([]);
+  const [modalData, setModalData] = useState<DataType>(dummyLogData);
 
   const fetchHome = async () => {
     const homes = await getHome();
@@ -119,7 +132,18 @@ function Home() {
                 </Flex>
                 <HStack>
                   <Button colorScheme="blue">Generate Report</Button>
-                  <Button colorScheme="blue">Log Data</Button>
+                  <Button
+                    colorScheme="blue"
+                    onClick={() =>
+                      setModalData({
+                        ...dummyLogData,
+                        id: "add",
+                        home: activeHome.id,
+                      })
+                    }
+                  >
+                    Log Data
+                  </Button>
                 </HStack>
               </Flex>
               <br />
@@ -130,39 +154,22 @@ function Home() {
                   </Card>
                 </GridItem>
                 <GridItem colSpan={8}>
-                  <Table>
+                  <Table className={style.table}>
                     <Thead>
-                      <Th w="1%">Day</Th>
-                      <Th>Date</Th>
-                      <Th>Clock In</Th>
-                      <Th>Clock Out</Th>
-                      <Th></Th>
+                      <Tr>
+                        <Th w="1%">Day</Th>
+                        <Th>Date</Th>
+                        <Th>Clock In</Th>
+                        <Th>Clock Out</Th>
+                      </Tr>
                     </Thead>
                     <Tbody>
                       {data.map((d, index) => (
-                        <Tr key={d.id}>
+                        <Tr key={d.id} onClick={() => setModalData(d)}>
                           <Td>{index + 1}</Td>
                           <Td>{getDate(d.clockIn)}</Td>
                           <Td>{getTime(d.clockIn)}</Td>
                           <Td>{getTime(d.clockOut)}</Td>
-                          <Td>
-                            <HStack spacing="0.5rem">
-                              <IconButton
-                                icon={<FiEdit />}
-                                size="sm"
-                                variant="ghost"
-                                colorScheme="blue"
-                                aria-label={""}
-                              />
-                              <IconButton
-                                icon={<FiTrash />}
-                                size="sm"
-                                variant="ghost"
-                                colorScheme="red"
-                                aria-label={""}
-                              />
-                            </HStack>
-                          </Td>
                         </Tr>
                       ))}
                     </Tbody>
@@ -195,6 +202,13 @@ function Home() {
           </Flex>
         </>
       )}
+
+      <LogDataModal
+        open={modalData.id !== ""}
+        data={modalData}
+        onClose={() => setModalData(dummyLogData)}
+        fetch={fetchData}
+      />
     </>
   );
 }

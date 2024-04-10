@@ -7,7 +7,6 @@ import {
   Button,
   Flex,
   Heading,
-  IconButton,
   Menu,
   MenuButton,
   MenuItem,
@@ -15,10 +14,13 @@ import {
 } from "@chakra-ui/react";
 import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
 
+import { endSession } from "@/utils";
 import { loadAuthStateFromLocalStorage } from "@/utils/storage";
 
+import "react-datepicker/dist/react-datepicker.css";
+import "react-day-picker/dist/style.css";
+
 import logo from "@/assets/img/logo.png";
-import { endSession } from "@/utils";
 
 function Layout({ children }: { children: ReactNode }) {
   const auth = loadAuthStateFromLocalStorage();

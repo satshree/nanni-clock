@@ -28,3 +28,21 @@ a {
 img {
   pointer-events: none;
 }
+
+.react-datepicker-popper[data-placement^="bottom"] {
+  margin-top: 0px !important;
+}
+
+.rdp-month:last-child {
+  margin-right: auto !important;
+}
+
+.rdp-month:first-child {
+  margin-left: auto !important;
+}
+
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: var(--chakra-colors-blue-500) !important;
+}
