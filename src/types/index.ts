@@ -14,7 +14,7 @@ export type HomeType = {
 
 export type DataType = {
   id: string;
-  clockIn: string;
-  clockOut: string;
+  clockIn: Date;
+  clockOut: Date;
   home: string;
 };

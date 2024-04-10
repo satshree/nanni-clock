@@ -30,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     const existingAuth: AuthType = loadAuthStateFromLocalStorage();
 
-    if (existingAuth) {
+    if (existingAuth.token !== "") {
       routeHome();
     }
   }, []);

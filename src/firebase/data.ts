@@ -1,7 +1,7 @@
 import {
   collection,
   doc,
-  getDoc,
+  // getDoc,
   getDocs,
   query,
   where,
@@ -43,7 +43,10 @@ export async function getHome(): Promise<HomeType[]> {
 
 export async function getData(homeID: string): Promise<DataType[]> {
   try {
-    const home = await getDoc(doc(firestore, "home", homeID));
+    // let startOfWeek = moment().startOf('week').toDate();
+    // let endOfWeek   = moment().endOf('week').toDate();
+
+    const home = doc(firestore, "home", homeID);
     const dataQuery = query(
       collection(firestore, "clock"),
       where("home", "==", home)
@@ -51,8 +54,8 @@ export async function getData(homeID: string): Promise<DataType[]> {
 
     return (await getDocs(dataQuery)).docs.map((d) => ({
       id: d.id,
-      clockIn: d.data().clockIn,
-      clockOut: d.data().clockOut,
+      clockIn: new Date(d.data().clockIn.seconds * 1000),
+      clockOut: new Date(d.data().clockOut.seconds * 1000),
       home: d.data().home.id,
     }));
   } catch (error) {
