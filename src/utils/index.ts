@@ -3,6 +3,7 @@
 import { auth } from "@/firebase";
 import { removeAuthStateFromLocalStorage } from "./storage";
 import moment, { Moment } from "moment";
+import { DataType } from "@/types";
 
 export async function endSession() {
   try {
@@ -49,4 +50,14 @@ export function hourDifference(start: Date, end: Date) {
   const endDate = moment(end);
 
   return (endDate.diff(startDate, "seconds") / (60 * 60)).toFixed(1);
+}
+
+export function countHours(data: DataType[]): number {
+  let sum = 0;
+
+  for (let d of data) {
+    sum += parseFloat(hourDifference(d.clockIn, d.clockOut));
+  }
+
+  return sum;
 }

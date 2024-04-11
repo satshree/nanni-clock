@@ -31,7 +31,13 @@ import { FiChevronDown } from "react-icons/fi";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType } from "@/types";
-import { getCurrentWeek, getDate, getTime, hourDifference } from "@/utils";
+import {
+  countHours,
+  getCurrentWeek,
+  getDate,
+  getTime,
+  hourDifference,
+} from "@/utils";
 
 import WeekPicker from "@/components/WeekPicker";
 import LogDataModal from "@/components/LogDataModal";
@@ -104,6 +110,19 @@ function Home() {
       saveActiveHomeToLocalStore(home[0]);
     }
   }, [home]);
+
+  const getSummary = () => {
+    const totalHours = countHours(data);
+
+    return (
+      <>
+        {totalHours}
+        <Text fontSize="smaller">
+          (${(totalHours * activeHome.hourlyRate).toFixed(2)})
+        </Text>
+      </>
+    );
+  };
 
   return (
     <>
@@ -192,22 +211,32 @@ function Home() {
                     </Thead>
                     <Tbody>
                       {data.length > 0 ? (
-                        data.map((d, index) => (
-                          <Tr
-                            className={style.hoverable}
-                            key={d.id}
-                            onClick={() => {
-                              setModalData(d);
-                              toggleModal(true);
-                            }}
-                          >
-                            <Td>{index + 1}</Td>
-                            <Td>{getDate(d.clockIn)}</Td>
-                            <Td>{getTime(d.clockIn)}</Td>
-                            <Td>{getTime(d.clockOut)}</Td>
-                            <Td>{hourDifference(d.clockIn, d.clockOut)}</Td>
+                        <>
+                          {data.map((d, index) => (
+                            <Tr
+                              className={style.hoverable}
+                              key={d.id}
+                              onClick={() => {
+                                setModalData(d);
+                                toggleModal(true);
+                              }}
+                            >
+                              <Td>{index + 1}</Td>
+                              <Td>{getDate(d.clockIn)}</Td>
+                              <Td>{getTime(d.clockIn)}</Td>
+                              <Td>{getTime(d.clockOut)}</Td>
+                              <Td>{hourDifference(d.clockIn, d.clockOut)}</Td>
+                            </Tr>
+                          ))}
+                          <Tr>
+                            <Td colSpan={4}>
+                              <Heading size="sm" float="right">
+                                Total
+                              </Heading>
+                            </Td>
+                            <Td>{getSummary()}</Td>
                           </Tr>
-                        ))
+                        </>
                       ) : (
                         <Tr>
                           <Td colSpan={4}>
