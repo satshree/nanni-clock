@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     icon: "/favicon-32x32.png",
     apple: "/apple-touch-icon.png",
   },
-  manifest: "/site.webmanifest",
+  // manifest: "/site.webmanifest",
   // "mask-icon": {
   //   href: "/safari-pinned-tab.svg",
   //   color: "#3182ce",

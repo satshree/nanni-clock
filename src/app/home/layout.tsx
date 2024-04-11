@@ -25,6 +25,15 @@ import logo from "@/assets/img/logo.png";
 function Layout({ children }: { children: ReactNode }) {
   const auth = loadAuthStateFromLocalStorage();
 
+  // const [authData, setAuthData] = useState(auth);
+
+  // useEffect(() => setAuthData(auth), [auth]);
+
+  const getDisplayName = () => {
+    // console.log("RETURN DATA", authData.user.displayName);
+    // return authData.user.displayName;
+    return auth.user.displayName;
+  };
   return (
     <>
       <Box w="100%" h="100px" p="1rem" bgColor="#f2f2f2">
@@ -44,7 +53,7 @@ function Layout({ children }: { children: ReactNode }) {
               variant="ghost"
               rightIcon={<FiUser />}
             >
-              {auth.user.displayName}
+              <span suppressHydrationWarning>{getDisplayName()}</span>
             </MenuButton>
             <MenuList>
               <MenuItem icon={<FiSettings />}>Settings</MenuItem>

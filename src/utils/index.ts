@@ -43,3 +43,10 @@ export function getCurrentWeek() {
 
   return week;
 }
+
+export function hourDifference(start: Date, end: Date) {
+  const startDate = moment(start);
+  const endDate = moment(end);
+
+  return endDate.diff(startDate, "hours");
+}

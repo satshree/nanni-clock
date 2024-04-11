@@ -31,7 +31,7 @@ import { FiChevronDown } from "react-icons/fi";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType } from "@/types";
-import { getCurrentWeek, getDate, getTime } from "@/utils";
+import { getCurrentWeek, getDate, getTime, hourDifference } from "@/utils";
 
 import WeekPicker from "@/components/WeekPicker";
 import LogDataModal from "@/components/LogDataModal";
@@ -66,6 +66,7 @@ function Home() {
   const [activeHome, setActiveHome] = useState<HomeType>(dummyHomeData);
 
   const [data, setData] = useState<DataType[]>([]);
+  const [showModal, toggleModal] = useState(false);
   const [modalData, setModalData] = useState<DataType>(dummyLogData);
 
   const fetchHome = async () => {
@@ -139,13 +140,14 @@ function Home() {
                   <Button colorScheme="blue">Generate Report</Button>
                   <Button
                     colorScheme="blue"
-                    onClick={() =>
+                    onClick={() => {
                       setModalData({
                         ...dummyLogData,
                         id: "add",
                         home: activeHome.id,
-                      })
-                    }
+                      });
+                      toggleModal(true);
+                    }}
                   >
                     Log Data
                   </Button>
@@ -173,6 +175,7 @@ function Home() {
                         <Th>Date</Th>
                         <Th>Clock In</Th>
                         <Th>Clock Out</Th>
+                        <Th>Total Hours</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -181,12 +184,16 @@ function Home() {
                           <Tr
                             className={style.hoverable}
                             key={d.id}
-                            onClick={() => setModalData(d)}
+                            onClick={() => {
+                              setModalData(d);
+                              toggleModal(true);
+                            }}
                           >
                             <Td>{index + 1}</Td>
                             <Td>{getDate(d.clockIn)}</Td>
                             <Td>{getTime(d.clockIn)}</Td>
                             <Td>{getTime(d.clockOut)}</Td>
+                            <Td>{hourDifference(d.clockIn, d.clockOut)}</Td>
                           </Tr>
                         ))
                       ) : (
@@ -235,9 +242,10 @@ function Home() {
       )}
 
       <LogDataModal
-        open={modalData.id !== ""}
+        open={showModal}
         data={modalData}
-        onClose={() => setModalData(dummyLogData)}
+        onClose={() => toggleModal(false)}
+        reset={() => setModalData(dummyLogData)}
         fetch={fetchData}
       />
     </>
