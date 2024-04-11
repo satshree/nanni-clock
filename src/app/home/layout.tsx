@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Box,
-  Button,
-  Center,
   Flex,
   Heading,
   IconButton,
@@ -14,6 +12,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useToast,
 } from "@chakra-ui/react";
 import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
 
@@ -28,11 +27,20 @@ import logo from "@/assets/img/logo.png";
 function Layout({ children }: { children: ReactNode }) {
   const auth = loadAuthStateFromLocalStorage();
 
+  const toast = useToast();
   const router = useRouter();
 
-  // const [authData, setAuthData] = useState(auth);
-
-  // useEffect(() => setAuthData(auth), [auth]);
+  if (auth.token === "") {
+    toast({
+      title: "Session timeout",
+      description: "Please log in again",
+      status: "info",
+      variant: "left-accent",
+      isClosable: true,
+      position: "bottom-left",
+    });
+    router.push("/");
+  }
 
   const getDisplayName = () => {
     // console.log("RETURN DATA", authData.user.displayName);
