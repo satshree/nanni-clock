@@ -147,7 +147,9 @@ function Home() {
                   </Menu>
                 </Flex>
                 <HStack>
-                  <Button colorScheme="blue">Generate Report</Button>
+                  <Button colorScheme="blue" isDisabled={data.length === 0}>
+                    Generate Invoice
+                  </Button>
                   <Button
                     colorScheme="blue"
                     onClick={() => {
