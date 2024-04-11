@@ -160,6 +160,7 @@ function LogDataModal(props: LogDataModalProps) {
                 <GridItem colSpan={12}>
                   {/* <FormLabel>Date</FormLabel> */}
                   <DayPicker
+                    weekStartsOn={1}
                     mode="single"
                     selected={date}
                     onSelect={(e) => setDate(e || new Date())}

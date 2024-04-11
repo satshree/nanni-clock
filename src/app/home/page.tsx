@@ -154,7 +154,7 @@ function Home() {
                       setModalData({
                         ...dummyLogData,
                         id: "add",
-                        home: activeHome.id,
+                        home: activeHome.id || "",
                       });
                       toggleModal(true);
                     }}
