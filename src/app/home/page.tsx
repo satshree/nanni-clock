@@ -260,25 +260,23 @@ function Home() {
         )
       ) : (
         <>
-          <Flex h="100%" w="100%" align="center" justify="center">
-            <Box>
-              <Center>
-                <Image
-                  src={loading.src}
-                  width={400}
-                  height={400}
-                  alt="Loading ..."
-                />
-              </Center>
-              <br />
-              <Center>
-                <Flex align="center">
-                  <Spinner mr="0.5rem" />
-                  <Text>Loading ...</Text>
-                </Flex>
-              </Center>
-            </Box>
-          </Flex>
+          <br />
+          <br />
+          <Center>
+            <Image
+              src={loading.src}
+              width={450}
+              height={450}
+              alt="Loading ..."
+            />
+          </Center>
+          <br />
+          <Center>
+            <Flex align="center">
+              <Spinner mr="0.5rem" />
+              <Text>Loading ...</Text>
+            </Flex>
+          </Center>
         </>
       )}
 
