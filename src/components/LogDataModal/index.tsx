@@ -60,9 +60,11 @@ function LogDataModal(props: LogDataModalProps) {
     setLoading(true);
 
     let clockInDate = clockIn;
+    clockInDate.setMonth(date.getMonth());
     clockInDate.setDate(date.getDate());
 
     let clockOutDate = clockOut;
+    clockOutDate.setMonth(date.getMonth());
     clockOutDate.setDate(date.getDate());
 
     const data = {
