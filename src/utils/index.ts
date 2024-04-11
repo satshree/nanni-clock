@@ -30,17 +30,18 @@ export function getTime(date: Date) {
 }
 
 export function getCurrentWeek() {
-  let startOfWeek = moment().startOf("week").add(1, "days");
+  let startOfWeek = moment().startOf("week"); //.add(1, "days");
 
   // let endOfWeek = moment().endOf("week").toDate();
 
   let week: Moment[] = [startOfWeek];
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 6; i++) {
     const tomorrow = moment(week[i]).add(1, "days");
     week.push(tomorrow);
   }
 
+  console.log(week);
   return week;
 }
 
@@ -48,5 +49,5 @@ export function hourDifference(start: Date, end: Date) {
   const startDate = moment(start);
   const endDate = moment(end);
 
-  return endDate.diff(startDate, "hours");
+  return (endDate.diff(startDate, "seconds") / (60 * 60)).toFixed(1);
 }
