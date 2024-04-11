@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     icon: "/favicon-32x32.png",
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/site.webmanifest",
+  // "mask-icon": {
+  //   href: "/safari-pinned-tab.svg",
+  //   color: "#3182ce",
+  // },
 };
 
 export const viewport: ViewportLayout = {
@@ -38,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <link rel="manifest" href="/site.webmanifest" />
+        {/* <link rel="manifest" href="/site.webmanifest" /> */}
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#3182ce" />
       </Head>
       <body className={inter.className}>
