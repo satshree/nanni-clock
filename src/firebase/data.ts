@@ -12,7 +12,7 @@ import {
 
 import { firestore } from "./index";
 import { loadAuthStateFromLocalStorage } from "@/utils/storage";
-import { DataType, HomeType } from "@/types";
+import { DataType, FamilyType, HomeType } from "@/types";
 import moment, { Moment } from "moment";
 
 const auth = loadAuthStateFromLocalStorage();
@@ -21,7 +21,7 @@ export async function getHome(): Promise<HomeType[]> {
   try {
     const familyQuery = query(
       collection(firestore, "family"),
-      where("user", "==", auth.user.uid)
+      where("user", "==", auth.user.email)
     );
 
     const homeIDList = (await getDocs(familyQuery)).docs.map(
@@ -44,6 +44,45 @@ export async function getHome(): Promise<HomeType[]> {
   }
 
   return [];
+}
+
+export async function addHome(data: HomeType): Promise<void> {
+  const homeCollection = collection(firestore, "home");
+  await addDoc(homeCollection, data);
+}
+
+export async function setHome(homeID: string, data: HomeType): Promise<void> {
+  const homeRef = doc(firestore, "home", homeID);
+  await updateDoc(homeRef, data);
+}
+
+export async function getFamily(homeID: string): Promise<FamilyType[]> {
+  try {
+    const familyQuery = query(
+      collection(firestore, "family"),
+      where("home", "==", homeID)
+    );
+
+    return (await getDocs(familyQuery)).docs.map((f) => ({
+      id: f.id,
+      home: f.data().home,
+      user: f.data().user,
+    }));
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+
+  return [];
+}
+
+export async function addFamily(home: string, user: string): Promise<void> {
+  const familyRef = collection(firestore, "family");
+  await addDoc(familyRef, { home, user });
+}
+
+export async function removeFamily(familyID: string): Promise<void> {
+  const familyRef = doc(firestore, "family", familyID);
+  await deleteDoc(familyRef);
 }
 
 export async function getData(

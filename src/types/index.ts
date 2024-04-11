@@ -5,12 +5,18 @@ export type AuthType = {
   user: User;
 };
 
+export type FamilyType = {
+  id?: string;
+  home: string;
+  user: string;
+};
+
 export type HomeType = {
-  id: string;
+  id?: string;
   name: string;
   hourlyRate: number;
   description: string;
-  uniqueCode: string;
+  uniqueCode?: string;
 };
 
 export type DataType = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Box,
@@ -40,6 +40,10 @@ import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
+import {
+  loadActiveHomeFromLocalStorage,
+  saveActiveHomeToLocalStore,
+} from "@/utils/storage";
 
 const dummyHomeData: HomeType = {
   id: "",
@@ -58,12 +62,14 @@ const dummyLogData: DataType = {
 };
 
 function Home() {
+  const activeHomeLocal = loadActiveHomeFromLocalStorage();
+
   const [fetched, setFetched] = useState(false);
 
   const [filterDate, setFilterDate] = useState<Moment[]>(getCurrentWeek());
 
   const [home, setHome] = useState<HomeType[]>([]);
-  const [activeHome, setActiveHome] = useState<HomeType>(dummyHomeData);
+  const [activeHome, setActiveHome] = useState<HomeType>(activeHomeLocal);
 
   const [data, setData] = useState<DataType[]>([]);
   const [showModal, toggleModal] = useState(false);
@@ -76,7 +82,7 @@ function Home() {
 
   const fetchData = async () => {
     if (activeHome !== undefined && activeHome.id !== "") {
-      const data = await getData(activeHome.id, filterDate);
+      const data = await getData(activeHome.id || "", filterDate);
       setData(data);
     }
   };
@@ -89,10 +95,14 @@ function Home() {
 
   useEffect(() => {
     fetchData();
+    saveActiveHomeToLocalStore(activeHome);
   }, [activeHome, filterDate]);
 
   useEffect(() => {
-    if (home.length > 0 ?? activeHome.id === "") setActiveHome(home[0]);
+    if (home.length > 0 ?? activeHome.id === "") {
+      setActiveHome(home[0]);
+      saveActiveHomeToLocalStore(home[0]);
+    }
   }, [home]);
 
   return (
