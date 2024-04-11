@@ -30,7 +30,7 @@ export function getTime(date: Date) {
 }
 
 export function getCurrentWeek() {
-  let startOfWeek = moment().startOf("week"); //.add(1, "days");
+  let startOfWeek = moment().startOf("week").add(1, "days");
 
   // let endOfWeek = moment().endOf("week").toDate();
 
@@ -41,7 +41,6 @@ export function getCurrentWeek() {
     week.push(tomorrow);
   }
 
-  console.log(week);
   return week;
 }
 
