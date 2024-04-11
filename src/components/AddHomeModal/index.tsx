@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import {
   Modal,
@@ -53,6 +55,8 @@ function AddHomeModal(props: ModalProps) {
         isClosable: true,
         position: "bottom-left",
       });
+
+      window.location.reload();
     } catch (error) {
       console.log("ERROR", error);
 

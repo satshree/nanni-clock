@@ -60,6 +60,31 @@ export async function setHome(homeID: string, data: HomeType): Promise<void> {
   await updateDoc(homeRef, data);
 }
 
+export async function deleteHome(homeID: string): Promise<void> {
+  (await getFamily(homeID)).forEach(async (f) => {
+    try {
+      await removeFamily(f.id || "");
+    } catch (error) {
+      console.log("ERROR", error);
+    }
+  });
+
+  (await getData(homeID, [])).forEach(async (d) => {
+    try {
+      await deleteData(d.id || "");
+    } catch (error) {
+      console.log("ERROR", error);
+    }
+  });
+
+  try {
+    const homeRef = doc(firestore, "home", homeID);
+    await deleteDoc(homeRef);
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+}
+
 export async function getFamily(homeID: string): Promise<FamilyType[]> {
   try {
     const familyQuery = query(
@@ -91,23 +116,30 @@ export async function removeFamily(familyID: string): Promise<void> {
 
 export async function getData(
   homeID: string,
-  filterDate: Moment[]
+  filterDate: Moment[] = []
 ): Promise<DataType[]> {
   try {
-    const dateGreater = moment(filterDate[0]).hour(0).minute(0).toDate();
-    const dateLesser = moment(filterDate[filterDate.length - 1])
-      .hour(23)
-      .minute(59)
-      .toDate();
-
-    const dataQuery = query(
+    let dataQuery = query(
       collection(firestore, "clock"),
-      and(
-        where("home", "==", homeID),
-        where("clockIn", ">=", dateGreater),
-        where("clockOut", "<=", dateLesser)
-      )
+      where("home", "==", homeID)
     );
+
+    if (filterDate.length > 0) {
+      const dateGreater = moment(filterDate[0]).hour(0).minute(0).toDate();
+      const dateLesser = moment(filterDate[filterDate.length - 1])
+        .hour(23)
+        .minute(59)
+        .toDate();
+
+      dataQuery = query(
+        collection(firestore, "clock"),
+        and(
+          where("home", "==", homeID),
+          where("clockIn", ">=", dateGreater),
+          where("clockOut", "<=", dateLesser)
+        )
+      );
+    }
 
     return (await getDocs(dataQuery)).docs.map((d) => ({
       id: d.id,

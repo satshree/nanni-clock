@@ -1,19 +1,16 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
   CardBody,
-  Center,
   Button,
   FormControl,
   FormLabel,
   Input,
   FormErrorMessage,
   FormHelperText,
-  SimpleGrid,
-  Textarea,
   Heading,
   Divider,
   Box,
@@ -29,11 +26,23 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiTrash, FiUserPlus } from "react-icons/fi";
 
-import { DataType, FamilyType, HomeType } from "@/types";
-import { addFamily, getFamily, removeFamily, setHome } from "@/firebase/data";
+import { FamilyType, HomeType } from "@/types";
+import {
+  addFamily,
+  deleteHome,
+  getFamily,
+  removeFamily,
+  setHome,
+} from "@/firebase/data";
 import {
   loadActiveHomeFromLocalStorage,
   loadAuthStateFromLocalStorage,
@@ -58,6 +67,12 @@ function Settings() {
   const [newFamilyError, setNewFamilyError] = useState("");
 
   const [deleteFamily, setDeleteFamily] = useState("");
+
+  const [deleteHomeAlert, setDeleteHome] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const cancelRef = useRef(null);
 
   useEffect(() => {
     const fetchFamilyList = async () => await fetchFamily();
@@ -174,6 +189,35 @@ function Settings() {
     setDeleteFamily("");
   };
 
+  const deleteHomeSubmit = async () => {
+    setDeleteLoading(true);
+
+    try {
+      await deleteHome(activeHome.id || "");
+
+      toast({
+        title: "Home deleted",
+        status: "success",
+        variant: "left-accent",
+        isClosable: true,
+        position: "bottom-left",
+      });
+
+      router.push("/home");
+    } catch (error) {
+      console.log("ERROR", error);
+
+      toast({
+        title: "Something went wrong",
+        status: "error",
+        variant: "left-accent",
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+    setDeleteLoading(false);
+  };
+
   return (
     <>
       <Flex align="center" justify="space-between">
@@ -236,6 +280,23 @@ function Settings() {
           </VStack>
         </CardBody>
       </Card>
+      <br />
+      <Card>
+        <CardBody>
+          <Heading size="md">Danger Zone</Heading>
+          <br />
+          <Divider />
+          <br />
+          <Box w="100%" p="1rem" borderWidth={0.8} borderRadius={8}>
+            <Flex align="center" justify="space-between">
+              <Text fontWeight={600}>Delete this home</Text>
+              <Button colorScheme="red" onClick={() => setDeleteHome(true)}>
+                Delete
+              </Button>
+            </Flex>
+          </Box>
+        </CardBody>
+      </Card>
 
       <Modal
         isOpen={showModal}
@@ -281,6 +342,55 @@ function Settings() {
         action={deleteFamilySubmit}
         onClose={() => setDeleteFamily("")}
       />
+
+      <ConfirmDelete
+        open={deleteHomeAlert}
+        title="Delete This Home"
+        description="Are you sure you want to delete this home? All data associated with this home will be lost and this action cannot be undone!"
+        action={() => {
+          setDeleteHome(false);
+          setConfirmDelete(true);
+        }}
+        onClose={() => setDeleteHome(false)}
+      />
+
+      <AlertDialog
+        isOpen={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        leastDestructiveRef={cancelRef}
+        isCentered={true}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete this home
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Proceeding forward will delete all data associated with this home
+              and this action cannot be undone.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRef}
+                onClick={() => setConfirmDelete(false)}
+                isDisabled={deleteLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={deleteHomeSubmit}
+                ml={3}
+                isLoading={deleteLoading}
+              >
+                I Understand
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }
