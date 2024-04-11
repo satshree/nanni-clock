@@ -2,11 +2,14 @@
 
 import { ReactNode } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Box,
   Button,
+  Center,
   Flex,
   Heading,
+  IconButton,
   Menu,
   MenuButton,
   MenuItem,
@@ -24,6 +27,8 @@ import logo from "@/assets/img/logo.png";
 
 function Layout({ children }: { children: ReactNode }) {
   const auth = loadAuthStateFromLocalStorage();
+
+  const router = useRouter();
 
   // const [authData, setAuthData] = useState(auth);
 
@@ -45,18 +50,28 @@ function Layout({ children }: { children: ReactNode }) {
             width={80}
             // style={{ borderRadius: "8px" }}
           />
-          <Heading size="lg">Nanny Clock</Heading>
+
+          <Heading size="xs" textAlign="center" p="0 1.5rem">
+            Clock in your Nanny's work and generate invoices easily
+          </Heading>
+
           <Menu>
             <MenuButton
               ml="0.5rem"
-              as={Button}
+              as={IconButton}
               variant="ghost"
-              rightIcon={<FiUser />}
-            >
-              <span suppressHydrationWarning>{getDisplayName()}</span>
-            </MenuButton>
+              icon={<FiUser />}
+            ></MenuButton>
             <MenuList>
-              <MenuItem icon={<FiSettings />}>Settings</MenuItem>
+              <MenuItem icon={<FiUser />}>
+                <span suppressHydrationWarning>{getDisplayName()}</span>
+              </MenuItem>
+              <MenuItem
+                icon={<FiSettings />}
+                onClick={() => router.push("/home/settings")}
+              >
+                Settings
+              </MenuItem>
               <MenuItem icon={<FiLogOut />} onClick={endSession}>
                 Logout
               </MenuItem>

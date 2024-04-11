@@ -111,7 +111,7 @@ function Home() {
         ) : (
           <>
             <Box p="0.5rem">
-              <Flex align="center" justify="space-between">
+              <Flex align="center" justify="space-between" flexWrap="wrap">
                 <Flex align="center">
                   Showing Data for
                   <Menu>
@@ -155,7 +155,7 @@ function Home() {
               </Flex>
               <br />
               <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
-                <GridItem colSpan={4}>
+                <GridItem colSpan={{ base: 12, md: 4 }}>
                   <Card borderRadius="8px">
                     <CardBody>
                       <Center>
@@ -167,7 +167,7 @@ function Home() {
                     </CardBody>
                   </Card>
                 </GridItem>
-                <GridItem colSpan={8}>
+                <GridItem colSpan={{ base: 12, md: 8 }} overflowX="auto">
                   <Table className={style.table}>
                     <Thead>
                       <Tr>
