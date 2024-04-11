@@ -47,8 +47,10 @@ export const calculateActiveWeek = (date: moment.Moment): Moment[] => {
   const wed = mon.clone().add(2, "d");
   const thu = mon.clone().add(3, "d");
   const fri = mon.clone().add(4, "d");
+  const sat = mon.clone().add(5, "d");
+  const sun = mon.clone().add(6, "d");
 
-  return [mon, tue, wed, thu, fri];
+  return [mon, tue, wed, thu, fri, sat, sun];
 };
 
 interface Props {
@@ -90,7 +92,7 @@ const WeekPicker: FC<Props> = ({ onWeekChange, selectedDays }) => {
       const dayOfMonth = date.day.date();
       const isHighlighted = isDayHighlighted(date.day);
       const style = {
-        backgroundColor: isHighlighted ? "#0052CC" : "#FFFFFF",
+        backgroundColor: isHighlighted ? "#3182CE" : "#FFFFFF",
         color: isHighlighted ? "#FFFFFF" : "#000000",
       };
 
