@@ -7,7 +7,6 @@ import {
   CardBody,
   Center,
   Button,
-  HStack,
   FormControl,
   FormLabel,
   Input,
@@ -31,7 +30,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@chakra-ui/react";
-import { FiTrash, FiUserPlus } from "react-icons/fi";
+import { FiArrowLeft, FiTrash, FiUserPlus } from "react-icons/fi";
 
 import { FamilyType } from "@/types";
 import { addFamily, getFamily, removeFamily, setHome } from "@/firebase/data";
@@ -210,6 +209,19 @@ function Settings() {
 
   return (
     <>
+      <Flex align="center" justify="space-between">
+        <Button
+          size="sm"
+          colorScheme="blue"
+          variant="ghost"
+          leftIcon={<FiArrowLeft />}
+          onClick={() => router.push("/home")}
+        >
+          Back Home
+        </Button>
+        <Heading size="md">Manage your home</Heading>
+      </Flex>
+      <br />
       <Card>
         <CardBody>
           <form onSubmit={handleSubmit}>
@@ -261,21 +273,9 @@ function Settings() {
               </FormHelperText>
             </FormControl>
             <Center>
-              <HStack>
-                <Button
-                  onClick={() => router.push("/home")}
-                  isDisabled={formLoading}
-                >
-                  Back Home
-                </Button>
-                <Button
-                  type="submit"
-                  colorScheme="green"
-                  isLoading={formLoading}
-                >
-                  Save Changes
-                </Button>
-              </HStack>
+              <Button type="submit" colorScheme="green" isLoading={formLoading}>
+                Save Changes
+              </Button>
             </Center>
           </form>
         </CardBody>
