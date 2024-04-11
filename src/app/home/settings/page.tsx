@@ -309,7 +309,7 @@ function Settings() {
                     variant="ghost"
                     size="sm"
                     aria-label={""}
-                    onClick={() => setDeleteFamily(f.id)}
+                    onClick={() => setDeleteFamily(f.id || "")}
                   />
                 </Flex>
               </Box>

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Box,
@@ -51,13 +51,13 @@ import {
   saveActiveHomeToLocalStore,
 } from "@/utils/storage";
 
-const dummyHomeData: HomeType = {
-  id: "",
-  name: "",
-  hourlyRate: 0,
-  description: "",
-  uniqueCode: "",
-};
+// const dummyHomeData: HomeType = {
+//   id: "",
+//   name: "",
+//   hourlyRate: 0,
+//   description: "",
+//   uniqueCode: "",
+// };
 
 const dummyLogData: DataType = {
   id: "",
@@ -69,10 +69,11 @@ const dummyLogData: DataType = {
 
 function Home() {
   const activeHomeLocal = loadActiveHomeFromLocalStorage();
+  const currentWeek = getCurrentWeek();
 
   const [fetched, setFetched] = useState(false);
 
-  const [filterDate, setFilterDate] = useState<Moment[]>(getCurrentWeek());
+  const [filterDate, setFilterDate] = useState<Moment[]>(currentWeek);
 
   const [home, setHome] = useState<HomeType[]>([]);
   const [activeHome, setActiveHome] = useState<HomeType>(activeHomeLocal);
@@ -189,6 +190,16 @@ function Home() {
                 <GridItem colSpan={{ base: 12, md: 4 }}>
                   <Card borderRadius="8px">
                     <CardBody>
+                      <Center>
+                        <Text
+                          fontSize="smaller"
+                          mb="0.5rem"
+                          _hover={{ cursor: "pointer" }}
+                          onClick={() => setFilterDate(currentWeek)}
+                        >
+                          Show current week
+                        </Text>
+                      </Center>
                       <Center>
                         <WeekPicker
                           onWeekChange={(dates) => setFilterDate(dates)}
