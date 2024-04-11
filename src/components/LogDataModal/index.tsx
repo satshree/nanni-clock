@@ -55,10 +55,16 @@ function LogDataModal(props: LogDataModalProps) {
   const handleSubmit = async () => {
     setLoading(true);
 
+    let clockInDate = clockIn;
+    clockInDate.setDate(date.getDate());
+
+    let clockOutDate = clockOut;
+    clockOutDate.setDate(date.getDate());
+
     const data = {
       home: props.data.home,
-      clockIn,
-      clockOut,
+      clockIn: clockInDate,
+      clockOut: clockOutDate,
       notes,
     };
 
