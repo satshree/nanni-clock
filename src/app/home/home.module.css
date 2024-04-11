@@ -2,7 +2,7 @@
   border-radius: 8px;
 }
 
-.table tr:hover {
+.hoverable:hover {
   cursor: pointer;
   background-color: #f9f9f9;
 }

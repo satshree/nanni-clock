@@ -12,7 +12,7 @@ import {
 import { firestore } from "./index";
 import { loadAuthStateFromLocalStorage } from "@/utils/storage";
 import { DataType, HomeType } from "@/types";
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 const auth = loadAuthStateFromLocalStorage();
 
@@ -45,14 +45,24 @@ export async function getHome(): Promise<HomeType[]> {
   return [];
 }
 
-export async function getData(homeID: string): Promise<DataType[]> {
+export async function getData(
+  homeID: string,
+  filterDate: Moment[]
+): Promise<DataType[]> {
   try {
-    // let startOfWeek = moment().startOf('week').toDate();
-    // let endOfWeek   = moment().endOf('week').toDate();
+    const dateGreater = moment(filterDate[0]).hour(0).minute(0).toDate();
+    const dateLesser = moment(filterDate[filterDate.length - 1])
+      .hour(23)
+      .minute(59)
+      .toDate();
 
     const dataQuery = query(
       collection(firestore, "clock"),
-      where("home", "==", homeID)
+      and(
+        where("home", "==", homeID),
+        where("clockIn", ">=", dateGreater),
+        where("clockOut", "<=", dateLesser)
+      )
     );
 
     return (await getDocs(dataQuery)).docs.map((d) => ({

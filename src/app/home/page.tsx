@@ -26,17 +26,20 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { Moment } from "moment";
 import { FiChevronDown } from "react-icons/fi";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType } from "@/types";
-import { getDate, getTime } from "@/utils";
+import { getCurrentWeek, getDate, getTime } from "@/utils";
 
+import WeekPicker from "@/components/WeekPicker";
 import LogDataModal from "@/components/LogDataModal";
 
 import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
+import empty from "@/assets/img/empty.svg";
 
 const dummyHomeData: HomeType = {
   id: "",
@@ -57,6 +60,8 @@ const dummyLogData: DataType = {
 function Home() {
   const [fetched, setFetched] = useState(false);
 
+  const [filterDate, setFilterDate] = useState<Moment[]>(getCurrentWeek());
+
   const [home, setHome] = useState<HomeType[]>([]);
   const [activeHome, setActiveHome] = useState<HomeType>(dummyHomeData);
 
@@ -70,7 +75,7 @@ function Home() {
 
   const fetchData = async () => {
     if (activeHome !== undefined && activeHome.id !== "") {
-      const data = await getData(activeHome.id);
+      const data = await getData(activeHome.id, filterDate);
       setData(data);
     }
   };
@@ -83,7 +88,7 @@ function Home() {
 
   useEffect(() => {
     fetchData();
-  }, [activeHome]);
+  }, [activeHome, filterDate]);
 
   useEffect(() => {
     if (home.length > 0 ?? activeHome.id === "") setActiveHome(home[0]);
@@ -150,7 +155,14 @@ function Home() {
               <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
                 <GridItem colSpan={4}>
                   <Card borderRadius="8px">
-                    <CardBody>daterange filter</CardBody>
+                    <CardBody>
+                      <Center>
+                        <WeekPicker
+                          onWeekChange={(dates) => setFilterDate(dates)}
+                          selectedDays={filterDate}
+                        />
+                      </Center>
+                    </CardBody>
                   </Card>
                 </GridItem>
                 <GridItem colSpan={8}>
@@ -164,14 +176,33 @@ function Home() {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {data.map((d, index) => (
-                        <Tr key={d.id} onClick={() => setModalData(d)}>
-                          <Td>{index + 1}</Td>
-                          <Td>{getDate(d.clockIn)}</Td>
-                          <Td>{getTime(d.clockIn)}</Td>
-                          <Td>{getTime(d.clockOut)}</Td>
+                      {data.length > 0 ? (
+                        data.map((d, index) => (
+                          <Tr
+                            className={style.hoverable}
+                            key={d.id}
+                            onClick={() => setModalData(d)}
+                          >
+                            <Td>{index + 1}</Td>
+                            <Td>{getDate(d.clockIn)}</Td>
+                            <Td>{getTime(d.clockIn)}</Td>
+                            <Td>{getTime(d.clockOut)}</Td>
+                          </Tr>
+                        ))
+                      ) : (
+                        <Tr>
+                          <Td colSpan={4}>
+                            <Center>
+                              <Image
+                                src={empty.src}
+                                width={350}
+                                height={350}
+                                alt="No Log Data"
+                              />
+                            </Center>
+                          </Td>
                         </Tr>
-                      ))}
+                      )}
                     </Tbody>
                   </Table>
                 </GridItem>

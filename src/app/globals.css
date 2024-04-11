@@ -46,3 +46,18 @@ img {
 .rdp-day_selected:hover {
   background-color: var(--chakra-colors-blue-500) !important;
 }
+
+.SingleDatePicker_picker__directionLeft {
+  left: -20% !important;
+}
+
+.SingleDatePickerInput__withBorder {
+  border-radius: 8px !important;
+  border: 1px solid var(--chakra-colors-chakra-border-color) !important;
+}
+
+.DayPicker_transitionContainer,
+.DayPicker__withBorder,
+.DayPickerNavigation_button__horizontalDefault {
+  border-radius: 8px !important;
+}
