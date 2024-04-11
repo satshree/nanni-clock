@@ -163,6 +163,11 @@ function Home() {
                           {h.name}
                         </MenuItem>
                       ))}
+                      {/* <MenuItem isDisabled={true}>
+                        <Center>
+                          <Text fontSize="smaller">Add new from menu bar</Text>
+                        </Center>
+                      </MenuItem> */}
                     </MenuList>
                   </Menu>
                 </Flex>

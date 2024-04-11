@@ -32,13 +32,14 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiTrash, FiUserPlus } from "react-icons/fi";
 
-import { FamilyType } from "@/types";
+import { DataType, FamilyType, HomeType } from "@/types";
 import { addFamily, getFamily, removeFamily, setHome } from "@/firebase/data";
 import {
   loadActiveHomeFromLocalStorage,
   loadAuthStateFromLocalStorage,
 } from "@/utils/storage";
 import ConfirmDelete from "@/components/ConfirmDelete";
+import HomeForm from "@/components/HomeForm";
 
 function Settings() {
   const router = useRouter();
@@ -49,14 +50,6 @@ function Settings() {
 
   const [formLoading, setFormLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
-
-  const [home, setHomeData] = useState(activeHome.name);
-  const [homeError, setHomeError] = useState("");
-
-  const [description, setDescription] = useState(activeHome.description);
-
-  const [hourlyRate, setHourlyRate] = useState(activeHome.hourlyRate);
-  const [hourlyRateError, setHourlyRateError] = useState("");
 
   const [familyList, setFamilyList] = useState<FamilyType[]>([]);
 
@@ -74,67 +67,41 @@ function Settings() {
   const fetchFamily = async () =>
     setFamilyList(await getFamily(activeHome.id || ""));
 
-  const onHomeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setHomeData(e.target.value);
-    setHomeError("");
-  };
-
-  const onHourlyRateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setHourlyRate(parseFloat(e.target.value));
-    setHourlyRateError("");
-  };
-
   const onNewFamilyChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewFamily(e.target.value);
     setNewFamilyError("");
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: HomeType) => {
+    setFormLoading(true);
 
-    let proceed = true;
+    try {
+      await setHome(activeHome.id || "", {
+        name: data.name,
+        hourlyRate: data.hourlyRate,
+        description: data.description,
+      });
 
-    if (home === "") {
-      setHomeError("Home Name is required!");
-      proceed = false;
+      toast({
+        title: "Home information updated",
+        status: "info",
+        variant: "left-accent",
+        isClosable: true,
+        position: "bottom-left",
+      });
+    } catch (error) {
+      console.log("ERROR", error);
+
+      toast({
+        title: "Something went wrong",
+        status: "error",
+        variant: "left-accent",
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
 
-    if (Number.isNaN(hourlyRate) || hourlyRate === 0.0) {
-      setHourlyRateError("Hourly Rate is required!");
-      proceed = false;
-    }
-
-    if (proceed) {
-      setFormLoading(true);
-
-      try {
-        await setHome(activeHome.id || "", {
-          name: home,
-          hourlyRate,
-          description,
-        });
-
-        toast({
-          title: "Home information updated",
-          status: "info",
-          variant: "left-accent",
-          isClosable: true,
-          position: "bottom-left",
-        });
-      } catch (error) {
-        console.log("ERROR", error);
-
-        toast({
-          title: "Something went wrong",
-          status: "error",
-          variant: "left-accent",
-          isClosable: true,
-          position: "bottom-left",
-        });
-      }
-
-      setFormLoading(false);
-    }
+    setFormLoading(false);
   };
 
   const addFamilySubmit = async (e: FormEvent) => {
@@ -224,60 +191,12 @@ function Settings() {
       <br />
       <Card>
         <CardBody>
-          <form onSubmit={handleSubmit}>
-            <SimpleGrid columns={{ sm: 1, md: 2 }} gap="1rem">
-              <FormControl isInvalid={homeError !== ""}>
-                <FormLabel>Home Name</FormLabel>
-                <Input
-                  placeholder="Cool Name For Your Home ..."
-                  value={home}
-                  onChange={onHomeChange}
-                />
-                {homeError ? (
-                  <FormErrorMessage>{homeError}</FormErrorMessage>
-                ) : (
-                  <FormHelperText>
-                    A Name for your home, or simply your Nanny's name
-                  </FormHelperText>
-                )}
-              </FormControl>
-              <FormControl isInvalid={hourlyRateError !== ""}>
-                <FormLabel>Hourly Rate</FormLabel>
-                <Input
-                  type="number"
-                  step="0.1"
-                  min={0}
-                  placeholder="Hourly Rate for Nanny ..."
-                  value={hourlyRate}
-                  onChange={onHourlyRateChange}
-                />
-                {hourlyRateError ? (
-                  <FormErrorMessage>{hourlyRateError}</FormErrorMessage>
-                ) : (
-                  <FormHelperText>Hourly Pay Rate of your Nanny</FormHelperText>
-                )}
-              </FormControl>
-            </SimpleGrid>
-            <br />
-            <FormControl>
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                placeholder="Something Cool About Your Home ..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={5}
-                resize="none"
-              ></Textarea>
-              <FormHelperText>
-                A Short Description about your home or your Nanny
-              </FormHelperText>
-            </FormControl>
-            <Center>
-              <Button type="submit" colorScheme="green" isLoading={formLoading}>
-                Save Changes
-              </Button>
-            </Center>
-          </form>
+          <HomeForm
+            add={false}
+            data={activeHome}
+            loading={formLoading}
+            onSubmit={handleSubmit}
+          />
         </CardBody>
       </Card>
       <br />

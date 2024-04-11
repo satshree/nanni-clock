@@ -17,6 +17,7 @@ export type HomeType = {
   hourlyRate: number;
   description: string;
   uniqueCode?: string;
+  created?: number;
 };
 
 export type DataType = {

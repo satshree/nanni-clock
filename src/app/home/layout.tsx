@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
@@ -15,8 +15,8 @@ import {
   useToast,
   Text,
 } from "@chakra-ui/react";
-import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
-import { TbCode } from "react-icons/tb";
+import { FiUser, FiSettings, FiLogOut, FiMenu } from "react-icons/fi";
+import { TbCode, TbHomePlus } from "react-icons/tb";
 
 import { endSession } from "@/utils";
 import { loadAuthStateFromLocalStorage } from "@/utils/storage";
@@ -25,12 +25,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-day-picker/dist/style.css";
 
 import logo from "@/assets/img/logo.png";
+import AddHomeModal from "@/components/AddHomeModal";
 
 function Layout({ children }: { children: ReactNode }) {
   const auth = loadAuthStateFromLocalStorage();
 
   const toast = useToast();
   const router = useRouter();
+
+  const [addHome, toggleHomeModal] = useState(false);
 
   if (auth.token === "") {
     toast({
@@ -70,18 +73,28 @@ function Layout({ children }: { children: ReactNode }) {
               ml="0.5rem"
               as={IconButton}
               variant="ghost"
-              icon={<FiUser />}
+              icon={<FiMenu />}
             ></MenuButton>
             <MenuList>
               <MenuItem icon={<FiUser />}>
                 <span suppressHydrationWarning>{getDisplayName()}</span>
               </MenuItem>
-              <MenuItem
-                icon={<FiSettings />}
-                onClick={() => router.push("/home/settings")}
-              >
-                Settings
-              </MenuItem>
+              {auth.token !== "" ? (
+                <>
+                  <MenuItem
+                    icon={<TbHomePlus />}
+                    onClick={() => toggleHomeModal(true)}
+                  >
+                    Add Home
+                  </MenuItem>
+                  <MenuItem
+                    icon={<FiSettings />}
+                    onClick={() => router.push("/home/settings")}
+                  >
+                    Settings
+                  </MenuItem>
+                </>
+              ) : null}
               <MenuItem icon={<FiLogOut />} onClick={endSession}>
                 Logout
               </MenuItem>
@@ -101,6 +114,8 @@ function Layout({ children }: { children: ReactNode }) {
           </Text>
         </Flex>
       </Box>
+
+      <AddHomeModal open={addHome} onClose={() => toggleHomeModal(false)} />
     </>
   );
 }

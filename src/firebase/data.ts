@@ -32,13 +32,16 @@ export async function getHome(): Promise<HomeType[]> {
       (h) => homeIDList.includes(h.id)
     );
 
-    return home.map((h) => ({
-      id: h.id,
-      name: h.data().name,
-      hourlyRate: h.data().hourlyRate,
-      description: h.data().description,
-      uniqueCode: h.data().uniqueCode,
-    }));
+    return home
+      .map((h) => ({
+        id: h.id,
+        name: h.data().name,
+        hourlyRate: h.data().hourlyRate,
+        description: h.data().description,
+        uniqueCode: h.data().uniqueCode,
+        created: h._document.createTime.timestamp.seconds,
+      }))
+      .sort((pH, nH) => (pH.created < nH.created ? -1 : 1));
   } catch (error) {
     console.log("ERROR", error);
   }
@@ -48,7 +51,8 @@ export async function getHome(): Promise<HomeType[]> {
 
 export async function addHome(data: HomeType): Promise<void> {
   const homeCollection = collection(firestore, "home");
-  await addDoc(homeCollection, data);
+  const newHome = await addDoc(homeCollection, data);
+  await addFamily(newHome.id, auth.user.email || "");
 }
 
 export async function setHome(homeID: string, data: HomeType): Promise<void> {
