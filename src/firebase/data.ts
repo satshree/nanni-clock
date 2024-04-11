@@ -7,6 +7,7 @@ import {
   where,
   and,
   addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import { firestore } from "./index";
@@ -112,4 +113,9 @@ export async function setData(data: DataType): Promise<void> {
 export async function updateData(id: string, data: DataType): Promise<void> {
   const dataRef = doc(firestore, "clock", id);
   await updateDoc(dataRef, data);
+}
+
+export async function deleteData(id: string): Promise<void> {
+  const dataRef = doc(firestore, "clock", id);
+  await deleteDoc(dataRef);
 }

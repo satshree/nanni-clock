@@ -24,13 +24,15 @@ import DatePicker from "react-datepicker";
 import { DataType } from "@/types";
 
 import style from "./form.module.css";
-import { dataExists, setData, updateData } from "@/firebase/data";
+import { dataExists, deleteData, setData, updateData } from "@/firebase/data";
+import ConfirmDelete from "../ConfirmDelete";
 
 interface LogDataModalProps {
   open: boolean;
   data: DataType;
   onClose: () => void;
   fetch: () => void;
+  reset: () => void;
 }
 
 function LogDataModal(props: LogDataModalProps) {
@@ -43,6 +45,8 @@ function LogDataModal(props: LogDataModalProps) {
   const [clockIn, setClockIn] = useState(new Date());
   const [clockOut, setClockOut] = useState(new Date());
   const [notes, setNotes] = useState("");
+
+  const [deleteLog, setDeleteLog] = useState(false);
 
   useEffect(() => setOpen(props.open), [props.open]);
   useEffect(() => {
@@ -105,9 +109,45 @@ function LogDataModal(props: LogDataModalProps) {
     setLoading(false);
   };
 
+  const handleDelete = async () => {
+    setLoading(true);
+    setDeleteLog(false);
+
+    try {
+      await deleteData(props.data.id || "");
+      props.fetch();
+
+      toast({
+        title: "Log data deleted successfully",
+        status: "success",
+        variant: "left-accent",
+        isClosable: true,
+        position: "bottom-left",
+      });
+
+      setLoading(false);
+      props.onClose();
+    } catch (error) {
+      console.log("ERROR", error);
+      toast({
+        title: "Something went wrong",
+        status: "error",
+        variant: "left-accent",
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
+
   return (
     <>
-      <Modal isOpen={open} size="lg" isCentered={true} onClose={props.onClose}>
+      <Modal
+        isOpen={open}
+        size="lg"
+        isCentered={true}
+        onClose={props.onClose}
+        onCloseComplete={props.reset}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Log Data</ModalHeader>
@@ -116,19 +156,17 @@ function LogDataModal(props: LogDataModalProps) {
             <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
               {props.data.id === "add" ? (
                 <GridItem colSpan={12}>
-                  <FormControl>
-                    {/* <FormLabel>Date</FormLabel> */}
-                    <DayPicker
-                      mode="single"
-                      selected={date}
-                      onSelect={(e) => setDate(e || new Date())}
-                      footer={
-                        <>
-                          <Center>{format(date, "PPPP")}</Center>
-                        </>
-                      }
-                    />
-                  </FormControl>
+                  {/* <FormLabel>Date</FormLabel> */}
+                  <DayPicker
+                    mode="single"
+                    selected={date}
+                    onSelect={(e) => setDate(e || new Date())}
+                    footer={
+                      <>
+                        <Center>{format(date, "PPPP")}</Center>
+                      </>
+                    }
+                  />
                 </GridItem>
               ) : null}
               <GridItem colSpan={6}>
@@ -177,7 +215,11 @@ function LogDataModal(props: LogDataModalProps) {
           <ModalFooter>
             <HStack spacing="1rem">
               {props.data.id !== "add" ? (
-                <Button colorScheme="red" isDisabled={loading}>
+                <Button
+                  colorScheme="red"
+                  onClick={() => setDeleteLog(true)}
+                  isDisabled={loading}
+                >
                   Delete
                 </Button>
               ) : null}
@@ -192,6 +234,14 @@ function LogDataModal(props: LogDataModalProps) {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <ConfirmDelete
+        open={deleteLog}
+        title="Delete log?"
+        description="Are you sure you want to delete this log data? This action cannot be undone"
+        onClose={() => setDeleteLog(false)}
+        action={handleDelete}
+      />
     </>
   );
 }
