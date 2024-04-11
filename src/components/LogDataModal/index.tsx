@@ -93,6 +93,13 @@ function LogDataModal(props: LogDataModalProps) {
           props.onClose();
         } else {
           await updateData(props.data.id || "", data);
+          toast({
+            title: "Log data updated",
+            status: "info",
+            variant: "left-accent",
+            isClosable: true,
+            position: "bottom-left",
+          });
           props.fetch();
           props.onClose();
         }
@@ -152,7 +159,9 @@ function LogDataModal(props: LogDataModalProps) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Log Data</ModalHeader>
+          <ModalHeader>
+            {props.data.id === "add" ? "Log Data" : format(date, "PPPP")}
+          </ModalHeader>
           <ModalCloseButton isDisabled={loading} />
           <ModalBody>
             <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
@@ -227,11 +236,11 @@ function LogDataModal(props: LogDataModalProps) {
                 </Button>
               ) : null}
               <Button
-                colorScheme="green"
+                colorScheme={props.data.id === "add" ? "green" : "blue"}
                 isLoading={loading}
                 onClick={() => handleSubmit()}
               >
-                Log
+                {props.data.id === "add" ? "Log" : "Save changes"}
               </Button>
             </HStack>
           </ModalFooter>
