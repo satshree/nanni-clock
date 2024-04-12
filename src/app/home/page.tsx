@@ -28,7 +28,7 @@ import {
 } from "@chakra-ui/react";
 import { Moment } from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { FiChevronDown, FiMenu } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType, GlobalState } from "@/types";
@@ -171,20 +171,15 @@ function Home() {
                 />
               </Center>
               <Center mt="1rem">
-                <Heading size="sm">
-                  <Flex align="center">
-                    Create a home from the menu at top right corner
-                    <span style={{ marginLeft: "0.5rem" }}>
-                      <FiMenu />
-                    </span>
-                  </Flex>
+                <Heading size="sm" textAlign="center">
+                  Create a home from the menu at top right corner
                 </Heading>
               </Center>
               <Center mt="1rem">
                 <Text>OR</Text>
               </Center>
               <Center mt="1rem">
-                <Heading size="sm">
+                <Heading size="sm" textAlign="center">
                   You can request a family member who has created a home to add
                   you in their home
                 </Heading>
@@ -224,7 +219,7 @@ function Home() {
                     </MenuList>
                   </Menu>
                 </Flex>
-                <HStack>
+                <HStack m="1rem" mr="0">
                   <Button
                     colorScheme="blue"
                     isDisabled={data.length === 0}

@@ -4,6 +4,7 @@ import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import {
   Button,
+  Center,
   Flex,
   Heading,
   Text,
@@ -76,7 +77,13 @@ export default function Home() {
 
   return (
     <>
-      <Flex flexDirection="column" h="100%" align="center" justify="center">
+      <Flex
+        flexDirection="column"
+        h="100%"
+        align="center"
+        justify="center"
+        p="1rem"
+      >
         <VStack spacing="1rem">
           <Image
             src={invoice.src}
@@ -85,7 +92,7 @@ export default function Home() {
             alt="Nanny Clock Invoice"
           />
           <Heading size="md">Nanny Clock</Heading>
-          <Text>
+          <Text textAlign="center">
             Clock in your nanny&lsquo;s work and generate invoices easily
           </Text>
           <Button
