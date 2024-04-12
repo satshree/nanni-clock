@@ -87,7 +87,7 @@ function HomeForm(props: HomeFormProps) {
               <FormErrorMessage>{homeError}</FormErrorMessage>
             ) : (
               <FormHelperText>
-                A Name for your home, or simply your Nanny's name
+                A Name for your home, or simply your Nanny&lsquo;s name
               </FormHelperText>
             )}
           </FormControl>

@@ -99,7 +99,7 @@ function InvoiceDrawer(props: DrawerProps) {
 
     setTotalHours(totalHour);
     setTotalCost(totalHour * activeHome.hourlyRate);
-  }, [props.data]);
+  }, [props.data, activeHome.hourlyRate]);
 
   return (
     <>

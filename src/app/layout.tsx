@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     icon: "/favicon-32x32.png",
     apple: "/apple-touch-icon.png",
   },
-  // manifest: "/site.webmanifest",
+  manifest: "/site.webmanifest",
   // "mask-icon": {
   //   href: "/safari-pinned-tab.svg",
   //   color: "#3182ce",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: ViewportLayout = {
-  themeColor: "#fff",
+  // themeColor: "#fff",
   width: "device-width",
   height: "device-height",
   initialScale: 1,

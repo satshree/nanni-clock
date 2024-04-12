@@ -33,14 +33,17 @@ export async function getHome(): Promise<HomeType[]> {
     );
 
     return home
-      .map((h) => ({
-        id: h.id,
-        name: h.data().name,
-        hourlyRate: h.data().hourlyRate,
-        description: h.data().description,
-        uniqueCode: h.data().uniqueCode,
-        created: h._document.createTime.timestamp.seconds,
-      }))
+      .map((hme) => {
+        const h: any = hme;
+        return {
+          id: h.id,
+          name: h.data().name,
+          hourlyRate: h.data().hourlyRate,
+          description: h.data().description,
+          uniqueCode: h.data().uniqueCode,
+          created: h._document.createTime.timestamp.seconds,
+        };
+      })
       .sort((pH, nH) => (pH.created < nH.created ? -1 : 1));
   } catch (error) {
     console.log("ERROR", error);

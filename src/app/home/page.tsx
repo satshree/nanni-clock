@@ -55,13 +55,13 @@ import empty from "@/assets/img/empty.svg";
 import build from "@/assets/img/build.svg";
 import InvoiceDrawer from "@/components/InvoiceDrawer";
 
-// const dummyHomeData: HomeType = {
-//   id: "",
-//   name: "",
-//   hourlyRate: 0,
-//   description: "",
-//   uniqueCode: "",
-// };
+const dummyHomeData: HomeType = {
+  id: "",
+  name: "",
+  hourlyRate: 0,
+  description: "",
+  uniqueCode: "",
+};
 
 const dummyLogData: DataType = {
   id: "",
@@ -97,7 +97,10 @@ function Home() {
     const homes = await getHome();
     setHome(homes);
 
-    if (homes.length === 0) removeActiveHomeFromLocalStorage();
+    if (homes.length === 0) {
+      removeActiveHomeFromLocalStorage();
+      dispatch(setActiveHome(dummyHomeData));
+    }
   };
 
   const fetchData = async () => {
@@ -120,8 +123,12 @@ function Home() {
   }, [activeHome, filterDate]);
 
   useEffect(() => {
-    if (home.length > 0 ?? activeHome.id === "")
-      dispatch(setActiveHome(home[0]));
+    const updateHome = () => {
+      if (home.length > 0 ?? activeHome.id === "")
+        dispatch(setActiveHome(home[0]));
+    };
+
+    updateHome();
   }, [home]);
 
   const getSummary = () => {
@@ -204,7 +211,7 @@ function Home() {
                         <MenuItem
                           key={h.id}
                           isDisabled={h.id === activeHome.id}
-                          onClick={() => setActiveHome(h)}
+                          onClick={() => dispatch(setActiveHome(h))}
                         >
                           {h.name}
                         </MenuItem>

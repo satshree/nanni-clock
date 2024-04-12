@@ -47,7 +47,8 @@ function Layout({ children }: { children: ReactNode }) {
       isClosable: true,
       position: "bottom-left",
     });
-    router.push("/");
+
+    if (typeof window !== "undefined") window.location.href = "/";
   }
 
   const getDisplayName = () => {
@@ -71,7 +72,7 @@ function Layout({ children }: { children: ReactNode }) {
           />
 
           <Heading size="xs" textAlign="center" p="0 1.5rem">
-            Clock in your Nanny's work and generate invoices easily
+            Clock in your Nanny&apos;s work and generate invoices easily
           </Heading>
 
           <Menu>

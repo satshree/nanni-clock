@@ -56,7 +56,7 @@ function AddHomeModal(props: ModalProps) {
         position: "bottom-left",
       });
 
-      window.location.reload();
+      if (typeof window !== "undefined") window.location.reload();
     } catch (error) {
       console.log("ERROR", error);
 

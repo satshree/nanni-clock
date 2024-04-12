@@ -17,7 +17,8 @@ export async function endSession() {
 
   removeAuthStateFromLocalStorage();
   removeActiveHomeFromLocalStorage();
-  window.location.href = "/";
+
+  if (typeof window !== "undefined") window.location.href = "/";
 }
 
 export function toDateTime(seconds: number): Date {

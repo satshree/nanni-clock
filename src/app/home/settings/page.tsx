@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/dist/client/components/navigation";
 import {
   Card,
   CardBody,
@@ -49,10 +49,11 @@ import {
 } from "@/utils/storage";
 import ConfirmDelete from "@/components/ConfirmDelete";
 import HomeForm from "@/components/HomeForm";
+import Link from "next/link";
 
 function Settings() {
-  const router = useRouter();
   const toast = useToast();
+  const router = useRouter();
 
   const auth = loadAuthStateFromLocalStorage();
   const activeHome = loadActiveHomeFromLocalStorage();
@@ -73,6 +74,7 @@ function Settings() {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const cancelRef = useRef(null);
+  const routeHomeRef = useRef(null);
 
   useEffect(() => {
     const fetchFamilyList = async () => await fetchFamily();
@@ -81,6 +83,17 @@ function Settings() {
 
   const fetchFamily = async () =>
     setFamilyList(await getFamily(activeHome.id || ""));
+
+  const routeHome = () => {
+    try {
+      // routeHomeRef.current?.click();
+      router.push("/home");
+    } catch {
+      if (typeof window !== "undefined") {
+        window.location.href = "/home";
+      }
+    }
+  };
 
   const onNewFamilyChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewFamily(e.target.value);
@@ -203,7 +216,7 @@ function Settings() {
         position: "bottom-left",
       });
 
-      router.push("/home");
+      routeHome();
     } catch (error) {
       console.log("ERROR", error);
 
@@ -220,13 +233,14 @@ function Settings() {
 
   return (
     <>
+      <Link href="/home" ref={routeHomeRef} style={{ display: "none" }} />
       <Flex align="center" justify="space-between">
         <Button
           size="sm"
           colorScheme="blue"
           variant="ghost"
           leftIcon={<FiArrowLeft />}
-          onClick={() => router.push("/home")}
+          onClick={routeHome}
         >
           Back Home
         </Button>
@@ -262,7 +276,13 @@ function Settings() {
           <br />
           <VStack spacing="1rem">
             {familyList.map((f) => (
-              <Box borderWidth={0.8} borderRadius={8} w="100%" p="1rem">
+              <Box
+                key={f.id}
+                borderWidth={0.8}
+                borderRadius={8}
+                w="100%"
+                p="1rem"
+              >
                 <Flex w="100%" align="center" justify="space-between">
                   <Text>{f.user}</Text>
                   <IconButton

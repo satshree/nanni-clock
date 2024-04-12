@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import {
   Button,
   Flex,
@@ -25,7 +25,7 @@ import { useEffect } from "react";
 
 export default function Home() {
   const toast = useToast();
-  const router = useRouter();
+  // const router = useRouter();
 
   useEffect(() => {
     const existingAuth: AuthType = loadAuthStateFromLocalStorage();
@@ -36,14 +36,17 @@ export default function Home() {
   }, []);
 
   const routeHome = () => {
-    window.location.href = "/home";
-    // router.push("/home");
+    if (typeof window !== "undefined") {
+      window.location.href = "/home";
+    }
+    // else {
+    //   router.push("/home");
+    // }
   };
 
   const signIn = () =>
     signInWithPopup(auth, new GoogleAuthProvider())
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
 
         const appAuth: AuthType = {
@@ -79,10 +82,12 @@ export default function Home() {
             src={invoice.src}
             width={450}
             height={450}
-            alt="Nanni Clock Invoice"
+            alt="Nanny Clock Invoice"
           />
-          <Heading size="md">Nanni Clock</Heading>
-          <Text>Clock in your nanny's work and generate invoices easily</Text>
+          <Heading size="md">Nanny Clock</Heading>
+          <Text>
+            Clock in your nanny&lsquo;s work and generate invoices easily
+          </Text>
           <Button
             // w="100"
             variant="outline"
