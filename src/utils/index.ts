@@ -21,13 +21,17 @@ export async function endSession() {
 }
 
 export function toDateTime(seconds: number): Date {
-  var t = new Date(1970, 0, 1); // Epoch
+  let t = new Date(1970, 0, 1); // Epoch
   t.setSeconds(seconds);
   return t;
 }
 
 export function getDate(date: Date) {
   return moment(date).format("MMM. DD, YYYY");
+}
+
+export function getDateWithDay(date: Date) {
+  return moment(date).format("dddd, MMM. DD");
 }
 
 export function getTime(date: Date) {
@@ -64,4 +68,11 @@ export function countHours(data: DataType[]): number {
   }
 
   return sum;
+}
+
+export function firstAndLastDayOfWeek(week: Moment[]): string {
+  const firstDay = moment(week[0]).format("MMM. DD");
+  const lastDay = moment(week[week.length - 1]).format("MMM. DD");
+
+  return `${firstDay} – ${lastDay}`;
 }

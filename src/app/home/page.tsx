@@ -34,6 +34,7 @@ import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType, GlobalState } from "@/types";
 import {
   countHours,
+  firstAndLastDayOfWeek,
   getCurrentWeek,
   getDate,
   getTime,
@@ -52,6 +53,7 @@ import style from "./home.module.css";
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
 import build from "@/assets/img/build.svg";
+import InvoiceDrawer from "@/components/InvoiceDrawer";
 
 // const dummyHomeData: HomeType = {
 //   id: "",
@@ -86,6 +88,10 @@ function Home() {
   const [data, setData] = useState<DataType[]>([]);
   const [showModal, toggleModal] = useState(false);
   const [modalData, setModalData] = useState<DataType>(dummyLogData);
+
+  const [invoiceDrawer, setInvoiceDrawer] = useState(false);
+  const [invoiceData, setInvoiceData] = useState<DataType[]>([]);
+  const [invoiceWeek, setInvoiceWeek] = useState("");
 
   const fetchHome = async () => {
     const homes = await getHome();
@@ -129,6 +135,12 @@ function Home() {
         </Text>
       </>
     );
+  };
+
+  const generateInvoice = () => {
+    setInvoiceData(data);
+    setInvoiceWeek(firstAndLastDayOfWeek(filterDate));
+    setInvoiceDrawer(true);
   };
 
   return (
@@ -206,7 +218,11 @@ function Home() {
                   </Menu>
                 </Flex>
                 <HStack>
-                  <Button colorScheme="blue" isDisabled={data.length === 0}>
+                  <Button
+                    colorScheme="blue"
+                    isDisabled={data.length === 0}
+                    onClick={generateInvoice}
+                  >
                     Generate Invoice
                   </Button>
                   <Button
@@ -336,6 +352,17 @@ function Home() {
         onClose={() => toggleModal(false)}
         reset={() => setModalData(dummyLogData)}
         fetch={fetchData}
+      />
+
+      <InvoiceDrawer
+        open={invoiceDrawer}
+        data={invoiceData}
+        week={invoiceWeek}
+        onClose={() => setInvoiceDrawer(false)}
+        reset={() => {
+          setInvoiceData([]);
+          setInvoiceWeek("");
+        }}
       />
     </>
   );
