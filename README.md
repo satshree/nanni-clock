@@ -4,7 +4,7 @@
     <img src="./src/assets/img/logo.png" alt="Nanny Clock" style="pointer-events: none" />
 </div>
 <br />
-Clock in your nanni's work and generate invoices easily
+Clock in your nanny's work and generate invoices easily
 
 ## Stack
 

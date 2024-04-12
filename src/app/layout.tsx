@@ -10,8 +10,8 @@ import { ViewportLayout } from "next/dist/lib/metadata/types/extra-types";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Nanni Clock",
-  description: "Clock in your nanni's work and generate invoices easily",
+  title: "Nanny Clock",
+  description: "Clock in your nanny's work and generate invoices easily",
   // msapplicationTileColor: "#3182ce",
   // themeColor: "#ffffff",
   icons: {
