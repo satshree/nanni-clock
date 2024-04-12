@@ -18,6 +18,8 @@ import {
   Th,
   Tbody,
   Td,
+  Center,
+  VStack,
 } from "@chakra-ui/react";
 import { DataType, GlobalState } from "@/types";
 import { useSelector } from "react-redux";
@@ -77,17 +79,21 @@ function InvoiceDrawer(props: DrawerProps) {
 
   return (
     <>
-      <Drawer isOpen={open} onClose={props.onClose} size="lg" placement="right">
+      <Drawer isOpen={open} onClose={props.onClose} size="xl" placement="right">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader>Invoice</DrawerHeader>
           <DrawerCloseButton />
           <DrawerBody>
-            <br />
-            <Heading size="lg">{activeHome.name}</Heading>
-            <Text>Invoice for {week}</Text>
-            <Text>Invoice Generated at {getDate(new Date())}</Text>
-            <Table mt="2.5rem">
+            <VStack spacing="0.5rem" align="start" pl="1rem">
+              <Heading size="lg">{activeHome.name}</Heading>
+              <Text>Invoice for {week}</Text>
+              <Text>Invoice Generated at {getDate(new Date())}</Text>
+              <Text>
+                Hourly Pay Rate of ${activeHome.hourlyRate.toFixed(2)}
+              </Text>
+            </VStack>
+            <Table mt="1.5rem">
               <Thead>
                 <Tr>
                   <Th w="100%">Description</Th>
