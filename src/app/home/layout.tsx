@@ -15,6 +15,7 @@ import {
   useToast,
   Text,
 } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 import { FiUser, FiSettings, FiLogOut, FiMenu } from "react-icons/fi";
 import { TbCode, TbHomePlus } from "react-icons/tb";
 
@@ -26,9 +27,11 @@ import "react-day-picker/dist/style.css";
 
 import logo from "@/assets/img/logo.png";
 import AddHomeModal from "@/components/AddHomeModal";
+import { GlobalState } from "@/types";
 
 function Layout({ children }: { children: ReactNode }) {
   const auth = loadAuthStateFromLocalStorage();
+  const activeHome = useSelector((state: GlobalState) => state.activeHome);
 
   const toast = useToast();
   const router = useRouter();
@@ -52,6 +55,9 @@ function Layout({ children }: { children: ReactNode }) {
     // return authData.user.displayName;
     return auth.user.displayName;
   };
+
+  const getActiveHome = () => activeHome;
+
   return (
     <>
       <Box w="100%" h="100px" p="1rem" bgColor="#f2f2f2">
@@ -79,6 +85,7 @@ function Layout({ children }: { children: ReactNode }) {
               <MenuItem icon={<FiUser />}>
                 <span suppressHydrationWarning>{getDisplayName()}</span>
               </MenuItem>
+
               {auth.token !== "" ? (
                 <>
                   <MenuItem
@@ -87,6 +94,10 @@ function Layout({ children }: { children: ReactNode }) {
                   >
                     Add Home
                   </MenuItem>
+                </>
+              ) : null}
+              {getActiveHome().id !== "" ? (
+                <>
                   <MenuItem
                     icon={<FiSettings />}
                     onClick={() => router.push("/home/settings")}

@@ -27,10 +27,11 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { Moment } from "moment";
-import { FiChevronDown } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { FiChevronDown, FiMenu } from "react-icons/fi";
 
 import { getData, getHome } from "@/firebase/data";
-import { DataType, HomeType } from "@/types";
+import { DataType, HomeType, GlobalState } from "@/types";
 import {
   countHours,
   getCurrentWeek,
@@ -42,14 +43,15 @@ import {
 import WeekPicker from "@/components/WeekPicker";
 import LogDataModal from "@/components/LogDataModal";
 
+import { setActiveHome } from "@/redux/actions";
+
+import { removeActiveHomeFromLocalStorage } from "@/utils/storage";
+
 import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
-import {
-  loadActiveHomeFromLocalStorage,
-  saveActiveHomeToLocalStore,
-} from "@/utils/storage";
+import build from "@/assets/img/build.svg";
 
 // const dummyHomeData: HomeType = {
 //   id: "",
@@ -68,15 +70,18 @@ const dummyLogData: DataType = {
 };
 
 function Home() {
-  const activeHomeLocal = loadActiveHomeFromLocalStorage();
+  const dispatch = useDispatch();
+
   const currentWeek = getCurrentWeek();
 
   const [fetched, setFetched] = useState(false);
 
   const [filterDate, setFilterDate] = useState<Moment[]>(currentWeek);
 
+  const activeHomeState = useSelector((state: GlobalState) => state.activeHome);
+  const [activeHome, updateActiveHome] = useState<HomeType>(activeHomeState);
+
   const [home, setHome] = useState<HomeType[]>([]);
-  const [activeHome, setActiveHome] = useState<HomeType>(activeHomeLocal);
 
   const [data, setData] = useState<DataType[]>([]);
   const [showModal, toggleModal] = useState(false);
@@ -85,6 +90,8 @@ function Home() {
   const fetchHome = async () => {
     const homes = await getHome();
     setHome(homes);
+
+    if (homes.length === 0) removeActiveHomeFromLocalStorage();
   };
 
   const fetchData = async () => {
@@ -100,16 +107,15 @@ function Home() {
     setTimeout(() => setFetched(true), 1500);
   }, []);
 
+  useEffect(() => updateActiveHome(activeHomeState), [activeHomeState]);
+
   useEffect(() => {
     fetchData();
-    saveActiveHomeToLocalStore(activeHome);
   }, [activeHome, filterDate]);
 
   useEffect(() => {
-    if (home.length > 0 ?? activeHome.id === "") {
-      setActiveHome(home[0]);
-      saveActiveHomeToLocalStore(home[0]);
-    }
+    if (home.length > 0 ?? activeHome.id === "")
+      dispatch(setActiveHome(home[0]));
   }, [home]);
 
   const getSummary = () => {
@@ -130,12 +136,40 @@ function Home() {
       {fetched ? (
         home.length === 0 ? (
           <>
-            <Flex h="100%" w="100%" align="center" justify="center">
-              <Box>
-                <Center>
-                  <Heading size="md">Let's create a home</Heading>
-                </Center>
-              </Box>
+            <Flex
+              h="100%"
+              w="100%"
+              align="center"
+              justify="center"
+              flexDir="column"
+            >
+              <Center>
+                <Image
+                  src={build.src}
+                  height={350}
+                  width={350}
+                  alt="build home"
+                />
+              </Center>
+              <Center mt="1rem">
+                <Heading size="sm">
+                  <Flex align="center">
+                    Create a home from the menu at top right corner
+                    <span style={{ marginLeft: "0.5rem" }}>
+                      <FiMenu />
+                    </span>
+                  </Flex>
+                </Heading>
+              </Center>
+              <Center mt="1rem">
+                <Text>OR</Text>
+              </Center>
+              <Center mt="1rem">
+                <Heading size="sm">
+                  You can request a family member who has created a home to add
+                  you in their home
+                </Heading>
+              </Center>
             </Flex>
           </>
         ) : (

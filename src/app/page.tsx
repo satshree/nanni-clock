@@ -35,7 +35,10 @@ export default function Home() {
     }
   }, []);
 
-  const routeHome = () => router.push("/home");
+  const routeHome = () => {
+    window.location.href = "/home";
+    // router.push("/home");
+  };
 
   const signIn = () =>
     signInWithPopup(auth, new GoogleAuthProvider())

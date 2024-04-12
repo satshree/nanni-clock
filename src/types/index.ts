@@ -27,3 +27,7 @@ export type DataType = {
   home: string;
   notes: string;
 };
+
+export type GlobalState = {
+  activeHome: HomeType;
+};

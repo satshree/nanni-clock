@@ -1,7 +1,10 @@
 "use client";
 
 import { auth } from "@/firebase";
-import { removeAuthStateFromLocalStorage } from "./storage";
+import {
+  removeActiveHomeFromLocalStorage,
+  removeAuthStateFromLocalStorage,
+} from "./storage";
 import moment, { Moment } from "moment";
 import { DataType } from "@/types";
 
@@ -13,6 +16,7 @@ export async function endSession() {
   }
 
   removeAuthStateFromLocalStorage();
+  removeActiveHomeFromLocalStorage();
   window.location.href = "/";
 }
 

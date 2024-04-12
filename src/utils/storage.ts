@@ -41,3 +41,7 @@ export function loadActiveHomeFromLocalStorage(): HomeType {
     return JSON.parse(defaultReturn);
   }
 }
+
+export function removeActiveHomeFromLocalStorage() {
+  localStorage.removeItem("activeHome");
+}
