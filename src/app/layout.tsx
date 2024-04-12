@@ -31,7 +31,7 @@ export const viewport: ViewportLayout = {
   height: "device-height",
   initialScale: 1,
   maximumScale: 1,
-  // minimumScale: 1,
+  minimumScale: 1,
   // viewportFit: "cover",
 };
 
