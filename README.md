@@ -1,9 +1,7 @@
 # Nanny Clock
 
-<div style="width: 250px; margin-left: auto; margin-right: auto">
-    <img src="./src/assets/img/logo.png" alt="Nanny Clock" style="pointer-events: none" />
-</div>
-<br />
+<img src="./src/assets/img/logo.png" alt="Nanny Clock" style="width: 150px; pointer-events: none; margin-bottom: 1rem" />
+  
 Clock in your nanny's work and generate invoices easily
 
 ## Stack
