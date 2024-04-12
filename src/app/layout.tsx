@@ -10,18 +10,23 @@ import { ViewportLayout } from "next/dist/lib/metadata/types/extra-types";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Nanni Clock",
-  description: "Clock in your nanni's work and generate invoices easily",
+  title: "Nanny Clock",
+  description: "Clock in your nanny's work and generate invoices easily",
   // msapplicationTileColor: "#3182ce",
   // themeColor: "#ffffff",
   icons: {
     icon: "/favicon-32x32.png",
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/site.webmanifest",
+  // "mask-icon": {
+  //   href: "/safari-pinned-tab.svg",
+  //   color: "#3182ce",
+  // },
 };
 
 export const viewport: ViewportLayout = {
-  themeColor: "#fff",
+  // themeColor: "#fff",
   width: "device-width",
   height: "device-height",
   initialScale: 1,
@@ -38,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <link rel="manifest" href="/site.webmanifest" />
+        {/* <link rel="manifest" href="/site.webmanifest" /> */}
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#3182ce" />
       </Head>
       <body className={inter.className}>

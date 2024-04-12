@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import {
   Button,
   Flex,
@@ -15,18 +15,38 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 import { auth } from "@/firebase";
 import { AuthType } from "@/types";
-import { saveAuthStateToLocalStorage } from "@/utils/storage";
+import {
+  saveAuthStateToLocalStorage,
+  loadAuthStateFromLocalStorage,
+} from "@/utils/storage";
 
-import invoice from "@/assets/invoice.svg";
+import invoice from "@/assets/img/invoice.svg";
+import { useEffect } from "react";
 
 export default function Home() {
   const toast = useToast();
-  const router = useRouter();
+  // const router = useRouter();
+
+  useEffect(() => {
+    const existingAuth: AuthType = loadAuthStateFromLocalStorage();
+
+    if (existingAuth.token !== "") {
+      routeHome();
+    }
+  }, []);
+
+  const routeHome = () => {
+    if (typeof window !== "undefined") {
+      window.location.href = "/home";
+    }
+    // else {
+    //   router.push("/home");
+    // }
+  };
 
   const signIn = () =>
     signInWithPopup(auth, new GoogleAuthProvider())
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
 
         const appAuth: AuthType = {
@@ -36,7 +56,7 @@ export default function Home() {
 
         saveAuthStateToLocalStorage(appAuth);
 
-        router.push("/home");
+        routeHome();
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -62,10 +82,12 @@ export default function Home() {
             src={invoice.src}
             width={450}
             height={450}
-            alt="Nanni Clock Invoice"
+            alt="Nanny Clock Invoice"
           />
-          <Heading size="md">Nanni Clock</Heading>
-          <Text>Clock in your nanni's work and generate invoices easily</Text>
+          <Heading size="md">Nanny Clock</Heading>
+          <Text>
+            Clock in your nanny&lsquo;s work and generate invoices easily
+          </Text>
           <Button
             // w="100"
             variant="outline"

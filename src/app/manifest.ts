@@ -2,9 +2,9 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Nanni Clock",
-    short_name: "Nanni Clock",
-    description: "Clock in your nanni's work and generate invoices easily",
+    name: "Nanny Clock",
+    short_name: "Nanny Clock",
+    description: "Clock in your nanny's work and generate invoices easily",
     start_url: ".",
     // author: "Satshree Shrestha",
     icons: [
