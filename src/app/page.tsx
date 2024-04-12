@@ -82,7 +82,7 @@ export default function Home() {
             alt="Nanni Clock Invoice"
           />
           <Heading size="md">Nanni Clock</Heading>
-          <Text>Clock in your nanni's work and generate invoices easily</Text>
+          <Text>Clock in your nanny's work and generate invoices easily</Text>
           <Button
             // w="100"
             variant="outline"

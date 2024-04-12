@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Drawer,
   DrawerBody,
@@ -9,7 +9,6 @@ import {
   DrawerOverlay,
   HStack,
   Button,
-  Flex,
   Heading,
   Text,
   Table,
@@ -18,11 +17,14 @@ import {
   Th,
   Tbody,
   Td,
-  Center,
   VStack,
+  Box,
 } from "@chakra-ui/react";
-import { DataType, GlobalState } from "@/types";
 import { useSelector } from "react-redux";
+import generatePDF, { Margin, Options } from "react-to-pdf";
+
+import { DataType, GlobalState } from "@/types";
+
 import {
   countHours,
   getDate,
@@ -46,6 +48,8 @@ type DataModifiedType = DataType & {
 };
 
 function InvoiceDrawer(props: DrawerProps) {
+  const invoice = useRef(null);
+
   const [open, setOpen] = useState(false);
   const [week, setWeek] = useState("");
   const [data, setData] = useState<DataModifiedType[]>([]);
@@ -54,6 +58,26 @@ function InvoiceDrawer(props: DrawerProps) {
   const [totalCost, setTotalCost] = useState(0.0);
 
   const activeHome = useSelector((state: GlobalState) => state.activeHome);
+
+  const pdfOptions: Options = {
+    filename: `${activeHome.name}-${week}.pdf`,
+    page: {
+      margin: Margin.MEDIUM,
+      format: "letter",
+    },
+    canvas: {
+      mimeType: "image/png",
+      qualityRatio: 1,
+    },
+    overrides: {
+      pdf: {
+        compress: true,
+      },
+      canvas: {
+        useCORS: true,
+      },
+    },
+  };
 
   useEffect(() => setOpen(props.open), [props.open]);
   useEffect(() => setWeek(props.week), [props.week]);
@@ -85,53 +109,61 @@ function InvoiceDrawer(props: DrawerProps) {
           <DrawerHeader>Invoice</DrawerHeader>
           <DrawerCloseButton />
           <DrawerBody>
-            <VStack spacing="0.5rem" align="start" pl="1rem">
-              <Heading size="lg">{activeHome.name}</Heading>
-              <Text>Invoice for {week}</Text>
-              <Text>Invoice Generated at {getDate(new Date())}</Text>
-              <Text>
-                Hourly Pay Rate of ${activeHome.hourlyRate.toFixed(2)}
-              </Text>
-            </VStack>
-            <Table mt="1.5rem">
-              <Thead>
-                <Tr>
-                  <Th w="100%">Description</Th>
-                  <Th>Hours</Th>
-                  <Th>Total</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data.map((d) => (
-                  <Tr key={d.id}>
-                    <Td>
-                      {d.dateWithDay}
-                      <Text fontSize="smaller" color="gray">
-                        {getTime(d.clockIn)} – {getTime(d.clockOut)}
-                      </Text>
-                    </Td>
-                    <Td>{d.hours}</Td>
-                    <Td>${d.total.toFixed(2)}</Td>
+            <Box ref={invoice}>
+              <VStack spacing="0.5rem" align="start" pl="1rem">
+                <Heading size="lg">{activeHome.name}</Heading>
+                <br />
+                <Text>Invoice for {week}</Text>
+                <Text>Invoice Generated at {getDate(new Date())}</Text>
+                <Text>
+                  Hourly Pay Rate of ${activeHome.hourlyRate.toFixed(2)}
+                </Text>
+              </VStack>
+              <Table mt="1.5rem">
+                <Thead>
+                  <Tr>
+                    <Th w="100%">Description</Th>
+                    <Th>Hours</Th>
+                    <Th>Total</Th>
                   </Tr>
-                ))}
-                <Tr borderTop="2px solid gray">
-                  <Td>
-                    <Heading size="sm" float="right">
-                      Total
-                    </Heading>
-                  </Td>
-                  <Td>{totalHours}</Td>
-                  <Td>
-                    <Text fontWeight={600}>${totalCost.toFixed(2)} </Text>
-                  </Td>
-                </Tr>
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {data.map((d) => (
+                    <Tr key={d.id}>
+                      <Td>
+                        {d.dateWithDay}
+                        <Text fontSize="smaller" color="gray">
+                          {getTime(d.clockIn)} – {getTime(d.clockOut)}
+                        </Text>
+                      </Td>
+                      <Td>{d.hours}</Td>
+                      <Td>${d.total.toFixed(2)}</Td>
+                    </Tr>
+                  ))}
+                  <Tr borderTop="2px solid gray">
+                    <Td>
+                      <Heading size="sm" float="right">
+                        Total
+                      </Heading>
+                    </Td>
+                    <Td>{totalHours}</Td>
+                    <Td>
+                      <Text fontWeight={600}>${totalCost.toFixed(2)} </Text>
+                    </Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </Box>
           </DrawerBody>
           <DrawerFooter>
             <HStack spacing="0.5rem">
               <Button onClick={props.onClose}>Close</Button>
-              <Button colorScheme="blue">Download</Button>
+              <Button
+                colorScheme="blue"
+                onClick={() => generatePDF(invoice, pdfOptions)}
+              >
+                Download
+              </Button>
             </HStack>
           </DrawerFooter>
         </DrawerContent>
