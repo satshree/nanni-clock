@@ -61,7 +61,7 @@ function Layout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Box w="100%" h="100px" p="1rem" bgColor="#f2f2f2">
+      <Box w="100%" h="100px" p="1rem" boxShadow="0 0 5px #888888">
         <Flex align="center" justify="space-between" w="100%" h="100%">
           <Image
             src={logo.src}
@@ -114,11 +114,11 @@ function Layout({ children }: { children: ReactNode }) {
           </Menu>
         </Flex>
       </Box>
-      <Box p="1rem" minH="calc(100% - 100px)">
+      <Box p="1rem" minH="calc(100% - 175px)">
         {children}
       </Box>
       <br />
-      <Box p="1rem" w="100%" backgroundColor="#f9f9f9">
+      <Box p="1rem" w="100%" h="80px" backgroundColor="#f9f9f9">
         <Flex align="center" justify="center">
           <Text fontSize="small">Made by Satshree Shrestha</Text>
           <Text fontSize="larger" ml="0.5rem">
