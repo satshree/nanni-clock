@@ -17,6 +17,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  SimpleGrid,
   Spinner,
   Table,
   Tbody,
@@ -26,9 +27,10 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { FiChevronDown } from "react-icons/fi";
+import { TbHomePlus } from "react-icons/tb";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType, GlobalState } from "@/types";
@@ -43,17 +45,21 @@ import {
 
 import WeekPicker from "@/components/WeekPicker";
 import LogDataModal from "@/components/LogDataModal";
+import InvoiceDrawer from "@/components/InvoiceDrawer";
 
 import { setActiveHome } from "@/redux/actions";
 
-import { removeActiveHomeFromLocalStorage } from "@/utils/storage";
+import {
+  loadAuthStateFromLocalStorage,
+  removeActiveHomeFromLocalStorage,
+} from "@/utils/storage";
 
 import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
 import build from "@/assets/img/build.svg";
-import InvoiceDrawer from "@/components/InvoiceDrawer";
+import { isTodayLogged } from "@/firebase/utils";
 
 const dummyHomeData: HomeType = {
   id: "",
@@ -74,6 +80,8 @@ const dummyLogData: DataType = {
 function Home() {
   const dispatch = useDispatch();
 
+  const auth = loadAuthStateFromLocalStorage();
+
   const currentWeek = getCurrentWeek();
 
   const [fetched, setFetched] = useState(false);
@@ -84,8 +92,10 @@ function Home() {
   const [activeHome, updateActiveHome] = useState<HomeType>(activeHomeState);
 
   const [home, setHome] = useState<HomeType[]>([]);
+  const [today] = useState(moment());
 
   const [data, setData] = useState<DataType[]>([]);
+  const [todayLogged, setTodayLogged] = useState(false);
   const [showModal, toggleModal] = useState(false);
   const [modalData, setModalData] = useState<DataType>(dummyLogData);
 
@@ -130,6 +140,8 @@ function Home() {
 
     updateHome();
   }, [home]);
+
+  useEffect(() => setTodayLogged(isTodayLogged(data)), [data]);
 
   const getSummary = () => {
     const totalHours = countHours(data);
@@ -189,59 +201,76 @@ function Home() {
         ) : (
           <>
             <Box p="0.5rem">
-              <Flex align="center" justify="space-between" flexWrap="wrap">
-                <Flex align="center">
-                  Showing Data for
-                  <Menu>
-                    <MenuButton
-                      ml="0.5rem"
-                      as={Button}
-                      variant="ghost"
-                      rightIcon={<FiChevronDown />}
-                    >
-                      {activeHome.name}
-                    </MenuButton>
-                    <MenuList>
-                      {home.map((h) => (
-                        <MenuItem
-                          key={h.id}
-                          isDisabled={h.id === activeHome.id}
-                          onClick={() => dispatch(setActiveHome(h))}
-                        >
-                          {h.name}
+              <Heading size="md" mb="0.25rem">
+                Hello {auth.user.displayName}
+              </Heading>
+              <Text>Its {today.format("MMMM Do, YYYY")}</Text>
+            </Box>
+            <Box p="0.5rem">
+              <SimpleGrid columns={{ sm: 1, md: 2 }}>
+                <Flex align="center" justify="center">
+                  <Flex align="center">
+                    Showing Data for
+                    <Menu>
+                      <MenuButton
+                        ml="0.5rem"
+                        as={Button}
+                        variant="ghost"
+                        rightIcon={<FiChevronDown />}
+                      >
+                        {activeHome.name}
+                      </MenuButton>
+                      <MenuList>
+                        {home.map((h) => (
+                          <MenuItem
+                            key={h.id}
+                            isDisabled={h.id === activeHome.id}
+                            onClick={() => dispatch(setActiveHome(h))}
+                          >
+                            {h.name}
+                          </MenuItem>
+                        ))}
+                        <MenuItem isDisabled={true}>
+                          <Center>
+                            <Text fontSize="smaller">
+                              <Flex alignItems="center">
+                                <h1 style={{ marginRight: "0.5rem" }}>
+                                  <TbHomePlus />
+                                </h1>
+                                Add new from menu bar
+                              </Flex>
+                            </Text>
+                          </Center>
                         </MenuItem>
-                      ))}
-                      {/* <MenuItem isDisabled={true}>
-                        <Center>
-                          <Text fontSize="smaller">Add new from menu bar</Text>
-                        </Center>
-                      </MenuItem> */}
-                    </MenuList>
-                  </Menu>
+                      </MenuList>
+                    </Menu>
+                  </Flex>
                 </Flex>
-                <HStack m="1rem" mr="0">
-                  <Button
-                    colorScheme="blue"
-                    isDisabled={data.length === 0}
-                    onClick={generateInvoice}
-                  >
-                    Generate Invoice
-                  </Button>
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => {
-                      setModalData({
-                        ...dummyLogData,
-                        id: "add",
-                        home: activeHome.id || "",
-                      });
-                      toggleModal(true);
-                    }}
-                  >
-                    Log Data
-                  </Button>
-                </HStack>
-              </Flex>
+                <Flex align="center" justify="center">
+                  <HStack m="1rem" mr="0">
+                    <Button
+                      colorScheme="blue"
+                      isDisabled={data.length === 0}
+                      onClick={generateInvoice}
+                    >
+                      Generate Invoice
+                    </Button>
+                    <Button
+                      colorScheme={todayLogged ? "blue" : "green"}
+                      onClick={() => {
+                        setModalData({
+                          ...dummyLogData,
+                          id: "add",
+                          home: activeHome.id || "",
+                        });
+                        toggleModal(true);
+                      }}
+                    >
+                      {todayLogged ? "Log Data" : "Log Today's Hour"}
+                    </Button>
+                  </HStack>
+                </Flex>
+              </SimpleGrid>
               <br />
               <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
                 <GridItem colSpan={{ base: 12, md: 4 }}>
