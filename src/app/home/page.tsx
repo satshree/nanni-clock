@@ -17,6 +17,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  SimpleGrid,
   Spinner,
   Table,
   Tbody,
@@ -206,66 +207,70 @@ function Home() {
               <Text>Its {today.format("MMMM Do, YYYY")}</Text>
             </Box>
             <Box p="0.5rem">
-              <Flex align="center" justify="space-between" flexWrap="wrap">
-                <Flex align="center">
-                  Showing Data for
-                  <Menu>
-                    <MenuButton
-                      ml="0.5rem"
-                      as={Button}
-                      variant="ghost"
-                      rightIcon={<FiChevronDown />}
-                    >
-                      {activeHome.name}
-                    </MenuButton>
-                    <MenuList>
-                      {home.map((h) => (
-                        <MenuItem
-                          key={h.id}
-                          isDisabled={h.id === activeHome.id}
-                          onClick={() => dispatch(setActiveHome(h))}
-                        >
-                          {h.name}
+              <SimpleGrid columns={{ sm: 1, md: 2 }}>
+                <Flex align="center" justify="center">
+                  <Flex align="center">
+                    Showing Data for
+                    <Menu>
+                      <MenuButton
+                        ml="0.5rem"
+                        as={Button}
+                        variant="ghost"
+                        rightIcon={<FiChevronDown />}
+                      >
+                        {activeHome.name}
+                      </MenuButton>
+                      <MenuList>
+                        {home.map((h) => (
+                          <MenuItem
+                            key={h.id}
+                            isDisabled={h.id === activeHome.id}
+                            onClick={() => dispatch(setActiveHome(h))}
+                          >
+                            {h.name}
+                          </MenuItem>
+                        ))}
+                        <MenuItem isDisabled={true}>
+                          <Center>
+                            <Text fontSize="smaller">
+                              <Flex alignItems="center">
+                                <h1 style={{ marginRight: "0.5rem" }}>
+                                  <TbHomePlus />
+                                </h1>
+                                Add new from menu bar
+                              </Flex>
+                            </Text>
+                          </Center>
                         </MenuItem>
-                      ))}
-                      <MenuItem isDisabled={true}>
-                        <Center>
-                          <Text fontSize="smaller">
-                            <Flex alignItems="center">
-                              <h1 style={{ marginRight: "0.5rem" }}>
-                                <TbHomePlus />
-                              </h1>
-                              Add new from menu bar
-                            </Flex>
-                          </Text>
-                        </Center>
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
+                      </MenuList>
+                    </Menu>
+                  </Flex>
                 </Flex>
-                <HStack m="1rem" mr="0">
-                  <Button
-                    colorScheme="blue"
-                    isDisabled={data.length === 0}
-                    onClick={generateInvoice}
-                  >
-                    Generate Invoice
-                  </Button>
-                  <Button
-                    colorScheme={todayLogged ? "blue" : "green"}
-                    onClick={() => {
-                      setModalData({
-                        ...dummyLogData,
-                        id: "add",
-                        home: activeHome.id || "",
-                      });
-                      toggleModal(true);
-                    }}
-                  >
-                    {todayLogged ? "Log Data" : "Log Today's Hour"}
-                  </Button>
-                </HStack>
-              </Flex>
+                <Flex align="center" justify="center">
+                  <HStack m="1rem" mr="0">
+                    <Button
+                      colorScheme="blue"
+                      isDisabled={data.length === 0}
+                      onClick={generateInvoice}
+                    >
+                      Generate Invoice
+                    </Button>
+                    <Button
+                      colorScheme={todayLogged ? "blue" : "green"}
+                      onClick={() => {
+                        setModalData({
+                          ...dummyLogData,
+                          id: "add",
+                          home: activeHome.id || "",
+                        });
+                        toggleModal(true);
+                      }}
+                    >
+                      {todayLogged ? "Log Data" : "Log Today's Hour"}
+                    </Button>
+                  </HStack>
+                </Flex>
+              </SimpleGrid>
               <br />
               <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
                 <GridItem colSpan={{ base: 12, md: 4 }}>
