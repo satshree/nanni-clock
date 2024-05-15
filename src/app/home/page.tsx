@@ -29,6 +29,7 @@ import {
 import moment, { Moment } from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { FiChevronDown } from "react-icons/fi";
+import { TbHomePlus } from "react-icons/tb";
 
 import { getData, getHome } from "@/firebase/data";
 import { DataType, HomeType, GlobalState } from "@/types";
@@ -57,6 +58,7 @@ import style from "./home.module.css";
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
 import build from "@/assets/img/build.svg";
+import { isTodayLogged } from "@/firebase/utils";
 
 const dummyHomeData: HomeType = {
   id: "",
@@ -92,6 +94,7 @@ function Home() {
   const [today] = useState(moment());
 
   const [data, setData] = useState<DataType[]>([]);
+  const [todayLogged, setTodayLogged] = useState(false);
   const [showModal, toggleModal] = useState(false);
   const [modalData, setModalData] = useState<DataType>(dummyLogData);
 
@@ -136,6 +139,8 @@ function Home() {
 
     updateHome();
   }, [home]);
+
+  useEffect(() => setTodayLogged(isTodayLogged(data)), [data]);
 
   const getSummary = () => {
     const totalHours = countHours(data);
@@ -223,11 +228,18 @@ function Home() {
                           {h.name}
                         </MenuItem>
                       ))}
-                      {/* <MenuItem isDisabled={true}>
+                      <MenuItem isDisabled={true}>
                         <Center>
-                          <Text fontSize="smaller">Add new from menu bar</Text>
+                          <Text fontSize="smaller">
+                            <Flex alignItems="center">
+                              <h1 style={{ marginRight: "0.5rem" }}>
+                                <TbHomePlus />
+                              </h1>
+                              Add new from menu bar
+                            </Flex>
+                          </Text>
                         </Center>
-                      </MenuItem> */}
+                      </MenuItem>
                     </MenuList>
                   </Menu>
                 </Flex>
@@ -240,7 +252,7 @@ function Home() {
                     Generate Invoice
                   </Button>
                   <Button
-                    colorScheme="blue"
+                    colorScheme={todayLogged ? "blue" : "green"}
                     onClick={() => {
                       setModalData({
                         ...dummyLogData,
@@ -250,7 +262,7 @@ function Home() {
                       toggleModal(true);
                     }}
                   >
-                    Log Data
+                    {todayLogged ? "Log Data" : "Log Today's Hour"}
                   </Button>
                 </HStack>
               </Flex>
