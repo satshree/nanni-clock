@@ -51,9 +51,24 @@ function LogDataModal(props: LogDataModalProps) {
   useEffect(() => setOpen(props.open), [props.open]);
   useEffect(() => {
     setDate(props.data.clockIn);
-    setClockIn(props.data.clockIn);
-    setClockOut(props.data.clockOut);
     setNotes(props.data.notes);
+
+    if (props.data.id === "add") {
+      const defaultClockIn = props.data.clockIn;
+      const defaultClockOut = props.data.clockOut;
+
+      defaultClockIn.setHours(9);
+      defaultClockIn.setMinutes(0);
+
+      defaultClockOut.setHours(17);
+      defaultClockOut.setMinutes(0);
+
+      setClockIn(defaultClockIn);
+      setClockOut(defaultClockOut);
+    } else {
+      setClockIn(props.data.clockIn);
+      setClockOut(props.data.clockOut);
+    }
   }, [props.data]);
 
   const handleSubmit = async () => {

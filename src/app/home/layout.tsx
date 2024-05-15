@@ -14,6 +14,8 @@ import {
   MenuList,
   useToast,
   Text,
+  Hide,
+  Show,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { FiUser, FiSettings, FiLogOut, FiMenu } from "react-icons/fi";
@@ -71,9 +73,11 @@ function Layout({ children }: { children: ReactNode }) {
             // style={{ borderRadius: "8px" }}
           />
 
-          <Heading size="xs" textAlign="center" p="0 1.5rem">
-            Clock in your Nanny&apos;s work and generate invoices easily
-          </Heading>
+          <Hide below="md">
+            <Heading size="xs" textAlign="center" p="0 1.5rem">
+              Clock in your Nanny&apos;s work and generate invoices easily
+            </Heading>
+          </Hide>
 
           <Menu>
             <MenuButton
@@ -118,13 +122,18 @@ function Layout({ children }: { children: ReactNode }) {
         {children}
       </Box>
       <br />
-      <Box p="1rem" w="100%" h="80px" backgroundColor="#f9f9f9">
+      <Box p="1rem" w="100%" h="90px" backgroundColor="#f9f9f9">
         <Flex align="center" justify="center">
           <Text fontSize="small">Made by Satshree Shrestha</Text>
           <Text fontSize="larger" ml="0.5rem">
             <TbCode />
           </Text>
         </Flex>
+        <Show below="md">
+          <Heading size="xs" textAlign="center" p="0.5rem 1.5rem 0.25rem">
+            Clock in your Nanny&apos;s work and generate invoices easily
+          </Heading>
+        </Show>
       </Box>
 
       <AddHomeModal open={addHome} onClose={() => toggleHomeModal(false)} />
