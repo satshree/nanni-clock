@@ -266,7 +266,8 @@ function Home() {
                         toggleModal(true);
                       }}
                     >
-                      {todayLogged ? "Log Data" : "Log Today's Hour"}
+                      {/* {todayLogged ? "Log Data" : "Log Today's Hour"} */}
+                      Log Data
                     </Button>
                   </HStack>
                 </Flex>
