@@ -26,7 +26,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -43,17 +43,20 @@ import {
 
 import WeekPicker from "@/components/WeekPicker";
 import LogDataModal from "@/components/LogDataModal";
+import InvoiceDrawer from "@/components/InvoiceDrawer";
 
 import { setActiveHome } from "@/redux/actions";
 
-import { removeActiveHomeFromLocalStorage } from "@/utils/storage";
+import {
+  loadAuthStateFromLocalStorage,
+  removeActiveHomeFromLocalStorage,
+} from "@/utils/storage";
 
 import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
 import build from "@/assets/img/build.svg";
-import InvoiceDrawer from "@/components/InvoiceDrawer";
 
 const dummyHomeData: HomeType = {
   id: "",
@@ -74,6 +77,8 @@ const dummyLogData: DataType = {
 function Home() {
   const dispatch = useDispatch();
 
+  const auth = loadAuthStateFromLocalStorage();
+
   const currentWeek = getCurrentWeek();
 
   const [fetched, setFetched] = useState(false);
@@ -84,6 +89,7 @@ function Home() {
   const [activeHome, updateActiveHome] = useState<HomeType>(activeHomeState);
 
   const [home, setHome] = useState<HomeType[]>([]);
+  const [today] = useState(moment());
 
   const [data, setData] = useState<DataType[]>([]);
   const [showModal, toggleModal] = useState(false);
@@ -188,6 +194,12 @@ function Home() {
           </>
         ) : (
           <>
+            <Box p="0.5rem">
+              <Heading size="md" mb="0.25rem">
+                Hello {auth.user.displayName}
+              </Heading>
+              <Text>Its {today.format("MMMM Do, YYYY")}</Text>
+            </Box>
             <Box p="0.5rem">
               <Flex align="center" justify="space-between" flexWrap="wrap">
                 <Flex align="center">
