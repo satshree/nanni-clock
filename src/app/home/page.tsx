@@ -41,6 +41,8 @@ import {
   getDate,
   getTime,
   hourDifference,
+  getDateWithDay,
+  getDateWithShortDay,
 } from "@/utils";
 
 import WeekPicker from "@/components/WeekPicker";
@@ -300,7 +302,6 @@ function Home() {
                   <Table className={style.table}>
                     <Thead>
                       <Tr>
-                        <Th w="1%">Day</Th>
                         <Th>Date</Th>
                         <Th>Clock In</Th>
                         <Th>Clock Out</Th>
@@ -310,7 +311,7 @@ function Home() {
                     <Tbody>
                       {data.length > 0 ? (
                         <>
-                          {data.map((d, index) => (
+                          {data.map((d) => (
                             <Tr
                               className={style.hoverable}
                               key={d.id}
@@ -319,15 +320,14 @@ function Home() {
                                 toggleModal(true);
                               }}
                             >
-                              <Td>{index + 1}</Td>
-                              <Td>{getDate(d.clockIn)}</Td>
+                              <Td>{getDateWithShortDay(d.clockIn)}</Td>
                               <Td>{getTime(d.clockIn)}</Td>
                               <Td>{getTime(d.clockOut)}</Td>
                               <Td>{hourDifference(d.clockIn, d.clockOut)}</Td>
                             </Tr>
                           ))}
                           <Tr>
-                            <Td colSpan={4}>
+                            <Td colSpan={3}>
                               <Heading size="sm" float="right">
                                 Total
                               </Heading>
@@ -337,7 +337,7 @@ function Home() {
                         </>
                       ) : (
                         <Tr>
-                          <Td colSpan={4}>
+                          <Td colSpan={3}>
                             <Center>
                               <Image
                                 src={empty.src}

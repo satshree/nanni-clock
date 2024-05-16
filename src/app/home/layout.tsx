@@ -130,9 +130,13 @@ function Layout({ children }: { children: ReactNode }) {
           </Text>
         </Flex>
         <Show below="md">
-          <Heading size="xs" textAlign="center" p="0.5rem 1.5rem 0.25rem">
+          <Text
+            fontSize="xx-small"
+            textAlign="center"
+            p="0.5rem 1.5rem 0.25rem"
+          >
             Clock in your Nanny&apos;s work and generate invoices easily
-          </Heading>
+          </Text>
         </Show>
       </Box>
 
