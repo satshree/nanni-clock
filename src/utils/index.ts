@@ -39,6 +39,10 @@ export function getTime(date: Date) {
   return moment(date).format("hh:mm a");
 }
 
+export function getDateWithShortDay(date: Date) {
+  return moment(date).format("ddd, MMM. DD");
+}
+
 export function getCurrentWeek() {
   let startOfWeek = moment().startOf("week").add(1, "days");
 
