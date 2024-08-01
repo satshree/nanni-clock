@@ -105,9 +105,15 @@ export async function getAutoClockSettings(
       where("home", "==", homeID)
     );
 
-    (await getDocs(autoClockSettingsQuery)).forEach(
-      (settings) => (clockSettings = { id: settings.id, ...settings.data() })
-    );
+    (await getDocs(autoClockSettingsQuery)).forEach((settings) => {
+      clockSettings = {
+        id: settings.id,
+        autoClockEnd: settings.data().autoClockEnd,
+        autoClockStart: settings.data().autoClockStart,
+        autoDailyClock: settings.data().autoDailyClock,
+        home: settings.data().home,
+      };
+    });
   } catch (error) {
     console.log("ERROR", error);
   }
