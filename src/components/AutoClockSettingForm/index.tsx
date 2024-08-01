@@ -98,8 +98,8 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
     <>
       <Heading size="md">Auto Clock In</Heading>
       <Text>
-        You can setup auto clocking in so you won't have to keep logging data
-        every day
+        Setup auto clocking in so you won&apos;t have to keep logging data every
+        day
       </Text>
       {!changes || <Text color="red">There are unsaved changes</Text>}
       <br />
