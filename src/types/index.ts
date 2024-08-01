@@ -5,6 +5,14 @@ export type AuthType = {
   user: User;
 };
 
+export type AutoClockType = {
+  id?: string;
+  autoClockEnd: string;
+  autoClockStart: string;
+  autoDailyClock: string[];
+  home: string;
+};
+
 export type FamilyType = {
   id?: string;
   home: string;

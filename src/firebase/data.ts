@@ -12,7 +12,7 @@ import {
 
 import { firestore } from "./index";
 import { loadAuthStateFromLocalStorage } from "@/utils/storage";
-import { DataType, FamilyType, HomeType } from "@/types";
+import { AutoClockType, DataType, FamilyType, HomeType } from "@/types";
 import moment, { Moment } from "moment";
 
 const auth = loadAuthStateFromLocalStorage();
@@ -86,6 +86,44 @@ export async function deleteHome(homeID: string): Promise<void> {
   } catch (error) {
     console.log("ERROR", error);
   }
+}
+
+export async function getAutoClockSettings(
+  homeID: string
+): Promise<AutoClockType> {
+  let clockSettings: AutoClockType = {
+    id: "",
+    autoClockEnd: "",
+    autoClockStart: "",
+    autoDailyClock: [],
+    home: "",
+  };
+
+  try {
+    const autoClockSettingsQuery = query(
+      collection(firestore, "homeSettings"),
+      where("home", "==", homeID)
+    );
+
+    (await getDocs(autoClockSettingsQuery)).forEach(
+      (settings) => (clockSettings = { id: settings.id, ...settings.data() })
+    );
+  } catch (error) {
+    console.log("ERROR", error);
+  }
+
+  return clockSettings;
+}
+
+export async function setAutoClockSettings(
+  autoClockData: AutoClockType
+): Promise<void> {
+  const autoClockSettingsRef = doc(
+    firestore,
+    "homeSettings",
+    autoClockData.id || ""
+  );
+  await updateDoc(autoClockSettingsRef, autoClockData);
 }
 
 export async function getFamily(homeID: string): Promise<FamilyType[]> {
