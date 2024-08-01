@@ -35,10 +35,12 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiTrash, FiUserPlus } from "react-icons/fi";
 
-import { FamilyType, HomeType } from "@/types";
+import { AutoClockType, FamilyType, HomeType } from "@/types";
 import {
   addFamily,
   deleteHome,
+  getAutoClockSettings,
+  setAutoClockSettings,
   getFamily,
   removeFamily,
   setHome,
@@ -50,6 +52,14 @@ import {
 import ConfirmDelete from "@/components/ConfirmDelete";
 import HomeForm from "@/components/HomeForm";
 import Link from "next/link";
+import AutoClockSettingForm from "@/components/AutoClockSettingForm";
+
+const defaultAutoClockValue: AutoClockType = {
+  autoClockEnd: "",
+  autoClockStart: "",
+  autoDailyClock: [],
+  home: "",
+};
 
 function Settings() {
   const toast = useToast();
@@ -60,6 +70,10 @@ function Settings() {
 
   const [formLoading, setFormLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
+
+  const [autoClockSetting, setAutoClockSetting] = useState<AutoClockType>(
+    defaultAutoClockValue
+  );
 
   const [familyList, setFamilyList] = useState<FamilyType[]>([]);
 
@@ -78,7 +92,11 @@ function Settings() {
 
   useEffect(() => {
     const fetchFamilyList = async () => await fetchFamily();
+    const fetchAutoClockSettings = async () =>
+      setAutoClockSetting(await getAutoClockSettings(activeHome.id || ""));
+
     fetchFamilyList();
+    fetchAutoClockSettings();
   }, []);
 
   const fetchFamily = async () =>
@@ -130,6 +148,17 @@ function Settings() {
     }
 
     setFormLoading(false);
+  };
+
+  const handleAutoClockSettingSubmit = (data: AutoClockType) => {
+    setAutoClockSettings(data);
+    toast({
+      title: "Auto Clock In settings updated",
+      status: "info",
+      variant: "left-accent",
+      isClosable: true,
+      position: "bottom-left",
+    });
   };
 
   const addFamilySubmit = async (e: FormEvent) => {
@@ -254,6 +283,15 @@ function Settings() {
             data={activeHome}
             loading={formLoading}
             onSubmit={handleSubmit}
+          />
+        </CardBody>
+      </Card>
+      <br />
+      <Card>
+        <CardBody>
+          <AutoClockSettingForm
+            data={autoClockSetting}
+            onSubmit={handleAutoClockSettingSubmit}
           />
         </CardBody>
       </Card>
