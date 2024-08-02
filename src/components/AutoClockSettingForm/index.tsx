@@ -13,6 +13,8 @@ import {
   CheckboxGroup,
   Checkbox,
   Stack,
+  Center,
+  Divider,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 
@@ -96,12 +98,15 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
 
   return (
     <>
-      <Heading size="md">Auto Clock In</Heading>
-      <Text>
-        Setup auto clocking in so you won&apos;t have to keep logging data every
-        day
-      </Text>
-      {!changes || <Text color="red">There are unsaved changes</Text>}
+      <Flex justify="space-between" align="center">
+        <Heading size="md">Auto Clock In</Heading>
+        <Text>
+          Setup auto clocking in so you won&apos;t have to keep logging data
+          every day
+        </Text>
+      </Flex>
+      <br />
+      <Divider />
       <br />
       <form onSubmit={handleSubmit}>
         <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
@@ -138,7 +143,8 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
             </FormControl>
           </GridItem>
           <GridItem colSpan={12}>
-            <FormControl>
+            <br />
+            <Center>
               <CheckboxGroup
                 colorScheme="blue"
                 value={autoDailyClock}
@@ -155,20 +161,41 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
                   <Checkbox value="su">Sunday</Checkbox>
                 </Stack>
               </CheckboxGroup>
-            </FormControl>
+            </Center>
+            <br />
+            <Center>
+              <Text>Choose days to auto clock</Text>
+            </Center>
           </GridItem>
         </Grid>
-        <br />
         {props.data.id !== "" || (
-          <Text fontSize="sm" textColor="#808080">
-            Auto Clock In has not been setup. Setup Now!
-          </Text>
+          <Center>
+            <Text
+              fontSize="sm"
+              textColor="#808080"
+              // marginBottom="1rem"
+              marginTop="1rem"
+            >
+              Auto Clock In has not been setup. Setup Now!
+            </Text>
+          </Center>
         )}
         <Flex align="center" justify="center">
-          <Button type="submit" colorScheme={changes ? "green" : "blue"}>
+          <Button
+            type="submit"
+            colorScheme={changes ? "green" : "blue"}
+            marginTop="1rem"
+          >
             Save Changes
           </Button>
         </Flex>
+        {!changes || (
+          <Center>
+            <Text color="red" marginTop="0.75rem">
+              There are unsaved changes
+            </Text>
+          </Center>
+        )}
       </form>
     </>
   );
