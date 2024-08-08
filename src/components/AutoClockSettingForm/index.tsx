@@ -98,13 +98,24 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
 
   return (
     <>
-      <Flex justify="space-between" align="center">
+      <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
+        <GridItem colSpan={6}>
+          <Heading size="md">Auto Clock In</Heading>
+        </GridItem>
+        <GridItem colSpan={6}>
+          <Text float="right">
+            Setup auto clocking in so you won&apos;t have to keep logging data
+            every day
+          </Text>
+        </GridItem>
+      </Grid>
+      {/* <Flex justify="space-between" align="center">
         <Heading size="md">Auto Clock In</Heading>
-        <Text>
+        <Text marginLeft="2rem">
           Setup auto clocking in so you won&apos;t have to keep logging data
           every day
         </Text>
-      </Flex>
+      </Flex> */}
       <br />
       <Divider />
       <br />
@@ -162,10 +173,10 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
                 </Stack>
               </CheckboxGroup>
             </Center>
-            <br />
+            {/* <br />
             <Center>
               <Text>Choose days to auto clock</Text>
-            </Center>
+            </Center> */}
           </GridItem>
         </Grid>
         {props.data.id !== "" || (
