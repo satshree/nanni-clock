@@ -38,10 +38,10 @@ import {
   countHours,
   firstAndLastDayOfWeek,
   getCurrentWeek,
-  getDate,
+  // getDate,
   getTime,
   hourDifference,
-  getDateWithDay,
+  // getDateWithDay,
   getDateWithShortDay,
 } from "@/utils";
 
@@ -122,6 +122,11 @@ function Home() {
     }
   };
 
+  const updateTodayLogged = async () => {
+    const logged = await isTodayLogged(activeHome.id || "");
+    setTodayLogged(logged);
+  };
+
   useEffect(() => {
     fetchHome();
 
@@ -143,7 +148,9 @@ function Home() {
     updateHome();
   }, [home]);
 
-  useEffect(() => setTodayLogged(isTodayLogged(data)), [data]);
+  useEffect(() => {
+    updateTodayLogged();
+  }, [data]);
 
   const getSummary = () => {
     const totalHours = countHours(data);
