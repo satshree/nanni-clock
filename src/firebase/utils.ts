@@ -1,6 +1,8 @@
-import { DataType } from "@/types";
+import { getData } from "./data";
 
-export function isTodayLogged(data: DataType[]): boolean {
+export async function isTodayLogged(homeID: string): Promise<boolean> {
+  const data = await getData(homeID);
+
   if (data.length > 0) {
     const today = new Date();
     const latestData = data[data.length - 1].clockIn;
