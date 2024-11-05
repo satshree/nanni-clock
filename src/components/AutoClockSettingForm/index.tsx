@@ -103,7 +103,7 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
           <Heading size="md">Auto Clock In</Heading>
         </GridItem>
         <GridItem colSpan={6}>
-          <Text float="right">
+          <Text float="right" fontSize="sm">
             Setup auto clocking in so you won&apos;t have to keep logging data
             every day
           </Text>
