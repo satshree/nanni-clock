@@ -141,7 +141,7 @@ function Home() {
 
   useEffect(() => {
     const updateHome = () => {
-      if (home.length > 0 ?? activeHome.id === "")
+      if (home.length > 0 && activeHome.id === "")
         dispatch(setActiveHome(home[0]));
     };
 
