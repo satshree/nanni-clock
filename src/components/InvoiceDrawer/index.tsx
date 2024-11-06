@@ -5,7 +5,7 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerFooter,
-  DrawerHeader,
+  // DrawerHeader,
   DrawerOverlay,
   HStack,
   Button,
@@ -19,6 +19,7 @@ import {
   Td,
   VStack,
   Box,
+  Flex,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import generatePDF, { Margin, Options } from "react-to-pdf";
@@ -27,7 +28,8 @@ import { DataType, GlobalState } from "@/types";
 
 import {
   countHours,
-  getDate,
+  getAmericanDateFormat,
+  // getDate,
   getDateWithDay,
   getTime,
   hourDifference,
@@ -106,53 +108,85 @@ function InvoiceDrawer(props: DrawerProps) {
       <Drawer isOpen={open} onClose={props.onClose} size="xl" placement="right">
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerHeader>Invoice</DrawerHeader>
+          {/* <DrawerHeader>Invoice</DrawerHeader> */}
           <DrawerCloseButton />
-          <DrawerBody>
-            <Box ref={invoice}>
-              <VStack spacing="0.5rem" align="start" pl="1rem">
-                <Heading size="lg">{activeHome.name}</Heading>
-                <br />
-                <Text>Invoice for {week}</Text>
-                <Text>Invoice Generated at {getDate(new Date())}</Text>
-                <Text>
-                  Hourly Pay Rate of ${activeHome.hourlyRate.toFixed(2)}
-                </Text>
-              </VStack>
-              <Table mt="1.5rem">
-                <Thead>
-                  <Tr>
-                    <Th w="100%">Description</Th>
-                    <Th>Hours</Th>
-                    <Th>Total</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {data.map((d) => (
-                    <Tr key={d.id}>
-                      <Td>
-                        {d.dateWithDay}
-                        <Text fontSize="smaller" color="gray">
-                          {getTime(d.clockIn)} – {getTime(d.clockOut)}
+          <DrawerBody pt="1.5rem">
+            <Box w="100%" h="100%" ref={invoice}>
+              <Flex
+                w="100%"
+                h="100%"
+                flexDirection="column"
+                justifyContent="space-between"
+              >
+                <div>
+                  <VStack spacing="0.5rem" align="start" pl="1rem">
+                    <Heading size="lg">{activeHome.name}</Heading>
+                    <br />
+                    <Flex
+                      w="100%"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <div>
+                        <Text>
+                          Hourly Pay Rate of ${activeHome.hourlyRate.toFixed(2)}
                         </Text>
-                      </Td>
-                      <Td>{d.hours}</Td>
-                      <Td>${d.total.toFixed(2)}</Td>
-                    </Tr>
-                  ))}
-                  <Tr borderTop="2px solid gray">
-                    <Td>
-                      <Heading size="sm" float="right">
-                        Total
-                      </Heading>
-                    </Td>
-                    <Td>{totalHours}</Td>
-                    <Td>
-                      <Text fontWeight={600}>${totalCost.toFixed(2)} </Text>
-                    </Td>
-                  </Tr>
-                </Tbody>
-              </Table>
+                      </div>
+                      <div>
+                        <Text>
+                          Invoice for <br />
+                          {week}
+                        </Text>
+                        {/* <Text>Invoice Generated at {getDate(new Date())}</Text> */}
+                      </div>
+                    </Flex>
+                  </VStack>
+                  <Table mt="1.5rem">
+                    <Thead>
+                      <Tr>
+                        <Th w="100%">Description</Th>
+                        <Th>Hours</Th>
+                        <Th>Total</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {data.map((d) => (
+                        <Tr key={d.id}>
+                          <Td>
+                            {d.dateWithDay}
+                            <Text fontSize="smaller" color="gray">
+                              {getTime(d.clockIn)} – {getTime(d.clockOut)}
+                            </Text>
+                          </Td>
+                          <Td>{d.hours}</Td>
+                          <Td>${d.total.toFixed(2)}</Td>
+                        </Tr>
+                      ))}
+                      <Tr borderTop="2px solid gray">
+                        <Td>
+                          <Heading size="sm" float="right">
+                            Total
+                          </Heading>
+                        </Td>
+                        <Td>{totalHours}</Td>
+                        <Td>
+                          <Text fontWeight={600}>${totalCost.toFixed(2)} </Text>
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  </Table>
+                </div>
+                <Box mb="1rem">
+                  <Flex alignItems="center" justifyContent="space-between">
+                    <Text fontSize="small">
+                      Generated by Nanny Clock
+                      <br />
+                      nanny-clock.vercel.app
+                    </Text>
+                    <Text>{getAmericanDateFormat(new Date())}</Text>
+                  </Flex>
+                </Box>
+              </Flex>
             </Box>
           </DrawerBody>
           <DrawerFooter>

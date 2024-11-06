@@ -124,6 +124,14 @@ export async function getAutoClockSettings(
 export async function setAutoClockSettings(
   autoClockData: AutoClockType
 ): Promise<void> {
+  if (autoClockData.id === "") {
+    const autoClockSettingsCollection = collection(firestore, "homeSettings");
+    const newSettings = await addDoc(
+      autoClockSettingsCollection,
+      autoClockData
+    );
+    autoClockData.id = newSettings.id;
+  }
   const autoClockSettingsRef = doc(
     firestore,
     "homeSettings",

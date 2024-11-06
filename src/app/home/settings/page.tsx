@@ -151,7 +151,10 @@ function Settings() {
   };
 
   const handleAutoClockSettingSubmit = (data: AutoClockType) => {
-    setAutoClockSettings(data);
+    if (data.home === "") data.home = activeHome.id || "";
+
+    setAutoClockSettings(data); // REDUX
+    setAutoClockSetting(data); // STATE
     toast({
       title: "Auto Clock In settings updated",
       status: "info",

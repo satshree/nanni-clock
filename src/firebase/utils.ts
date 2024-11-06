@@ -1,3 +1,4 @@
+import { auth } from ".";
 import { dataExists } from "./data";
 
 export async function isTodayLogged(homeID: string): Promise<boolean> {
@@ -17,4 +18,8 @@ export async function isTodayLogged(homeID: string): Promise<boolean> {
   // return false;
   const today = new Date();
   return await dataExists(homeID, today);
+}
+
+export function getCurrentUser() {
+  return auth.currentUser;
 }
