@@ -2,6 +2,7 @@ import Head from "next/head";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import "react-select-search/style.css";
 import "./globals.css";
 import StoreProvider from "./storeProvider";
 import App from "./appProvider";
