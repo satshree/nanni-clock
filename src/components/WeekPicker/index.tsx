@@ -136,13 +136,13 @@ const WeekPicker: FC<Props> = ({ onWeekChange, selectedDays }) => {
         hideKeyboardShortcutsPanel
         renderCalendarDay={renderCalendarDay}
         onDateChange={onDateChange}
-        displayFormat="DD/MM/YYYY"
+        displayFormat="MM/DD/YYYY"
         showDefaultInputIcon
         firstDayOfWeek={1}
         customInputIcon={
           <>
-            {moment(selectedDays[0]).format("DD/MM/YYYY")} -{" "}
-            {moment(selectedDays[4]).format("DD/MM/YYYY")}{" "}
+            {moment(selectedDays[0]).format("MM/DD/YYYY")} -{" "}
+            {moment(selectedDays[4]).format("MM/DD/YYYY")}{" "}
           </>
         }
       />

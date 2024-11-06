@@ -33,7 +33,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { TbHomePlus } from "react-icons/tb";
 
 import { getData, getHome } from "@/firebase/data";
-import { DataType, HomeType, GlobalState } from "@/types";
+import { DataType, HomeType, GlobalState, AuthType } from "@/types";
 import {
   countHours,
   firstAndLastDayOfWeek,
@@ -54,6 +54,8 @@ import { setActiveHome } from "@/redux/actions";
 import {
   loadAuthStateFromLocalStorage,
   removeActiveHomeFromLocalStorage,
+  removeAuthStateFromLocalStorage,
+  saveAuthStateToLocalStorage,
 } from "@/utils/storage";
 import { getCurrentUser, isTodayLogged } from "@/firebase/utils";
 
@@ -185,9 +187,11 @@ function Home() {
 
   useEffect(() => {
     fetchHome();
-    fetchAnalytics();
 
-    setTimeout(() => setFetched(true), 1500);
+    setTimeout(() => {
+      fetchAnalytics();
+      setFetched(true);
+    }, 1500);
   }, []);
 
   useEffect(() => updateActiveHome(activeHomeState), [activeHomeState]);

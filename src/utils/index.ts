@@ -85,3 +85,7 @@ export function firstAndLastDayOfWeek(week: Moment[]): string {
 export function parseMonth(month: string): string {
   return moment(month, "YYYY-MM").format("MMMM YYYY");
 }
+
+export function getAmericanDateFormat(date: Date) {
+  return moment(date).format("MM/DD/YYYY");
+}

@@ -28,7 +28,8 @@ import { DataType, GlobalState } from "@/types";
 
 import {
   countHours,
-  getDate,
+  getAmericanDateFormat,
+  // getDate,
   getDateWithDay,
   getTime,
   hourDifference,
@@ -182,7 +183,7 @@ function InvoiceDrawer(props: DrawerProps) {
                       <br />
                       nanny-clock.vercel.app
                     </Text>
-                    <Text>{getDate(new Date())}</Text>
+                    <Text>{getAmericanDateFormat(new Date())}</Text>
                   </Flex>
                 </Box>
               </Flex>

@@ -30,21 +30,9 @@ export default function Home() {
   // const router = useRouter();
 
   useEffect(() => {
-    const setRefreshedTokens = async (tokens: AuthType) => {
-      const accessToken = await tokens.user.getIdToken();
-
-      const appAuth: AuthType = {
-        token: accessToken || "",
-        user: existingAuth.user,
-      };
-
-      removeAuthStateFromLocalStorage();
-      saveAuthStateToLocalStorage(appAuth);
-    };
     const existingAuth: AuthType = loadAuthStateFromLocalStorage();
 
     if (existingAuth.token !== "") {
-      setRefreshedTokens(existingAuth);
       routeHome();
     }
   }, []);
