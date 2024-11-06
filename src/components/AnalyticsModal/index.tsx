@@ -73,6 +73,10 @@ export default function AnalyticsModal(props: AnalyticsModalProps) {
   }, [props.data.monthly]);
   useEffect(() => setDailyData(props.data.daily), [props.data.daily]);
 
+  useEffect(() => {
+    console.log("show", showMonth);
+  }, []);
+
   const getDailyData = () => {
     let data: {
       day: string;
@@ -98,6 +102,9 @@ export default function AnalyticsModal(props: AnalyticsModalProps) {
       size="xl"
       isOpen={show}
       onClose={props.onClose}
+      onCloseComplete={() => {
+        setShowMonth("");
+      }}
     >
       <ModalOverlay />
       <ModalContent maxWidth="80vw">
@@ -175,25 +182,27 @@ export default function AnalyticsModal(props: AnalyticsModalProps) {
                         </option>
                       ))}
                     </Select>
-                    {showMonth ? (
+                    {showMonth === "" ? (
+                      <Center p="1rem">
+                        Select month to display monthly analytics
+                      </Center>
+                    ) : (
                       <VStack mt="1rem" gap="1rem">
                         <DataWidget
-                          data={monthlyData[showMonth].totalHours.toFixed(2)}
+                          data={monthlyData[showMonth]?.totalHours.toFixed(2)}
                           title="Hours"
                         />
                         <DataWidget
-                          data={monthlyData[showMonth].totalDays.toString()}
+                          data={monthlyData[showMonth]?.totalDays.toString()}
                           title="Days"
                         />{" "}
                         <DataWidget
-                          data={`$ ${monthlyData[showMonth].totalCost.toFixed(
+                          data={`$ ${monthlyData[showMonth]?.totalCost.toFixed(
                             2
                           )}`}
                           title="Cost"
                         />
                       </VStack>
-                    ) : (
-                      <Center p="1rem">No data</Center>
                     )}
                   </Box>
                 </Box>
