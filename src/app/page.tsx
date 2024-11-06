@@ -4,7 +4,7 @@ import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import {
   Button,
-  Center,
+  // Center,
   Flex,
   Heading,
   Text,
@@ -19,6 +19,7 @@ import { AuthType } from "@/types";
 import {
   saveAuthStateToLocalStorage,
   loadAuthStateFromLocalStorage,
+  removeAuthStateFromLocalStorage,
 } from "@/utils/storage";
 
 import invoice from "@/assets/img/invoice.svg";
@@ -29,9 +30,21 @@ export default function Home() {
   // const router = useRouter();
 
   useEffect(() => {
+    const setRefreshedTokens = async (tokens: AuthType) => {
+      const accessToken = await tokens.user.getIdToken();
+
+      const appAuth: AuthType = {
+        token: accessToken || "",
+        user: existingAuth.user,
+      };
+
+      removeAuthStateFromLocalStorage();
+      saveAuthStateToLocalStorage(appAuth);
+    };
     const existingAuth: AuthType = loadAuthStateFromLocalStorage();
 
     if (existingAuth.token !== "") {
+      setRefreshedTokens(existingAuth);
       routeHome();
     }
   }, []);
@@ -47,11 +60,13 @@ export default function Home() {
 
   const signIn = () =>
     signInWithPopup(auth, new GoogleAuthProvider())
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
+      .then(async (result) => {
+        // const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const credential = await app.auth().currentUser.getIdToken(/* forceRefresh */ true)
+        const accessToken = await result.user.getIdToken();
 
         const appAuth: AuthType = {
-          token: credential?.accessToken || "",
+          token: accessToken || "",
           user: result.user,
         };
 

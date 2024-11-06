@@ -55,13 +55,25 @@ import {
   loadAuthStateFromLocalStorage,
   removeActiveHomeFromLocalStorage,
 } from "@/utils/storage";
+import { getCurrentUser, isTodayLogged } from "@/firebase/utils";
+
+import {
+  getAnalyticsDaily,
+  getAnalyticsMonthly,
+  getAnalyticsTotal,
+} from "@/api/analytics";
+import {
+  AnalyticsDailyApiResponse,
+  AnalyticsMonthlyApiResponse,
+  AnalyticsTotalApiResponse,
+} from "@/types/api";
 
 import style from "./home.module.css";
 
 import loading from "@/assets/img/loading.svg";
 import empty from "@/assets/img/empty.svg";
 import build from "@/assets/img/build.svg";
-import { isTodayLogged } from "@/firebase/utils";
+import AnalyticsModal from "@/components/AnalyticsModal";
 
 const dummyHomeData: HomeType = {
   id: "",
@@ -78,6 +90,16 @@ const dummyLogData: DataType = {
   home: "",
   notes: "",
 };
+
+const dummyAnalyticsTotalData: AnalyticsTotalApiResponse = {
+  totalCost: 0,
+  totalDays: 0,
+  totalHours: 0,
+};
+
+const dummyAnalyticsMonthlyData: AnalyticsMonthlyApiResponse = {};
+
+const dummyAnalyticsDailyData: AnalyticsDailyApiResponse = {};
 
 function Home() {
   const dispatch = useDispatch();
@@ -99,7 +121,15 @@ function Home() {
   const [data, setData] = useState<DataType[]>([]);
   const [todayLogged, setTodayLogged] = useState(false);
   const [showModal, toggleModal] = useState(false);
+  const [showAnalyticsModal, toggleAnalyticsModal] = useState(false);
   const [modalData, setModalData] = useState<DataType>(dummyLogData);
+
+  const [analyticsTotal, setAnalyticsTotal] =
+    useState<AnalyticsTotalApiResponse>(dummyAnalyticsTotalData);
+  const [analyticsMonthly, setAnalyticsMonthly] =
+    useState<AnalyticsMonthlyApiResponse>(dummyAnalyticsMonthlyData);
+  const [analyticsDaily, setAnalyticsDaily] =
+    useState<AnalyticsDailyApiResponse>(dummyAnalyticsDailyData);
 
   const [invoiceDrawer, setInvoiceDrawer] = useState(false);
   const [invoiceData, setInvoiceData] = useState<DataType[]>([]);
@@ -122,6 +152,32 @@ function Home() {
     }
   };
 
+  const fetchAnalytics = async () => {
+    if (activeHome !== undefined && activeHome.id !== "") {
+      const accessToken = (await getCurrentUser()?.getIdToken()) || "";
+
+      if (accessToken) {
+        const dataTotal = await getAnalyticsTotal(
+          accessToken,
+          activeHome.id || ""
+        );
+        setAnalyticsTotal(dataTotal);
+
+        const dataMonthly = await getAnalyticsMonthly(
+          accessToken,
+          activeHome.id || ""
+        );
+        setAnalyticsMonthly(dataMonthly);
+
+        const dataDaily = await getAnalyticsDaily(
+          accessToken,
+          activeHome.id || ""
+        );
+        setAnalyticsDaily(dataDaily);
+      }
+    }
+  };
+
   const updateTodayLogged = async () => {
     const logged = await isTodayLogged(activeHome.id || "");
     setTodayLogged(logged);
@@ -129,6 +185,7 @@ function Home() {
 
   useEffect(() => {
     fetchHome();
+    fetchAnalytics();
 
     setTimeout(() => setFetched(true), 1500);
   }, []);
@@ -138,6 +195,10 @@ function Home() {
   useEffect(() => {
     fetchData();
   }, [activeHome, filterDate]);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [activeHome]);
 
   useEffect(() => {
     const updateHome = () => {
@@ -258,6 +319,14 @@ function Home() {
                 <Flex align="center" justify="center">
                   <HStack m="1rem" mr="0">
                     <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => toggleAnalyticsModal(true)}
+                    >
+                      Analytics
+                    </Button>
+                    <Button
+                      size="sm"
                       colorScheme="blue"
                       isDisabled={data.length === 0}
                       onClick={generateInvoice}
@@ -265,6 +334,7 @@ function Home() {
                       Generate Invoice
                     </Button>
                     <Button
+                      size="sm"
                       colorScheme={todayLogged ? "blue" : "green"}
                       onClick={() => {
                         setModalData({
@@ -391,6 +461,16 @@ function Home() {
         onClose={() => toggleModal(false)}
         reset={() => setModalData(dummyLogData)}
         fetch={fetchData}
+      />
+
+      <AnalyticsModal
+        show={showAnalyticsModal}
+        data={{
+          total: analyticsTotal,
+          monthly: analyticsMonthly,
+          daily: analyticsDaily,
+        }}
+        onClose={() => toggleAnalyticsModal(false)}
       />
 
       <InvoiceDrawer

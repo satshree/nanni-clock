@@ -81,3 +81,7 @@ export function firstAndLastDayOfWeek(week: Moment[]): string {
 
   return `${firstDay} – ${lastDay}`;
 }
+
+export function parseMonth(month: string): string {
+  return moment(month, "YYYY-MM").format("MMMM YYYY");
+}
