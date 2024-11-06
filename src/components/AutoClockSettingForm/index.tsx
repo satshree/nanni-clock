@@ -1,6 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-
-import { AutoClockType } from "@/types";
+import moment from "moment";
 import {
   Grid,
   FormControl,
@@ -15,11 +14,21 @@ import {
   Stack,
   Center,
   Divider,
+  // Select,
 } from "@chakra-ui/react";
+import SelectSearch from "react-select-search";
 import DatePicker from "react-datepicker";
 
+import {
+  getCurrentTimezone,
+  getTimezoneUTCList,
+  // getTimezoneWithValue,
+  getTimezoneWithZone,
+} from "@/utils/timezone";
+
+import { AutoClockType } from "@/types";
+
 import style from "./style.module.css";
-import moment from "moment";
 
 interface AutoClockSettingFormProps {
   data: AutoClockType;
@@ -27,13 +36,13 @@ interface AutoClockSettingFormProps {
 }
 
 function AutoClockSettingForm(props: AutoClockSettingFormProps) {
+  const currentTimezone = getCurrentTimezone();
   const [changes, setChanges] = useState(false);
 
   const [autoClockStart, setAutoClockStart] = useState(new Date());
-
   const [autoClockEnd, setAutoClockEnd] = useState(new Date());
-
   const [autoDailyClock, setAutoDailyClock] = useState<string[]>([]);
+  const [timezoneSelect, setTimezoneSelect] = useState(currentTimezone);
 
   useEffect(() => {
     const clockInData = moment(props.data.autoClockStart, "h:mm A");
@@ -68,6 +77,19 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
     [props.data.autoDailyClock]
   );
 
+  useEffect(
+    () => setTimezoneSelect(props.data.timezone?.value || currentTimezone),
+    [props.data.timezone]
+  );
+
+  const getTimezoneSelectList = () =>
+    getTimezoneUTCList().map((tz) => ({
+      name: `${tz.value}${
+        tz.value === currentTimezone ? " (Your current timezone)" : ""
+      }`,
+      value: tz.value,
+    }));
+
   const onAutoClockStartChange = (e: Date) => {
     setAutoClockStart(e);
     setChanges(true);
@@ -83,6 +105,11 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
     setChanges(true);
   };
 
+  const onTimezoneChange = (e: string) => {
+    setTimezoneSelect(e);
+    setChanges(true);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -93,6 +120,10 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
       autoClockStart: moment(autoClockStart).format("h:mm A"),
       autoClockEnd: moment(autoClockEnd).format("h:mm A"),
       autoDailyClock,
+      timezone: {
+        value: timezoneSelect,
+        offset: getTimezoneWithZone(timezoneSelect)?.offset || 0,
+      },
     });
   };
 
@@ -109,19 +140,12 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
           </Text>
         </GridItem>
       </Grid>
-      {/* <Flex justify="space-between" align="center">
-        <Heading size="md">Auto Clock In</Heading>
-        <Text marginLeft="2rem">
-          Setup auto clocking in so you won&apos;t have to keep logging data
-          every day
-        </Text>
-      </Flex> */}
       <br />
       <Divider />
       <br />
       <form onSubmit={handleSubmit}>
-        <Grid templateColumns="repeat(12, 1fr)" gap="1rem">
-          <GridItem colSpan={6}>
+        <Grid templateColumns="repeat(3, 1fr)" gap="1rem">
+          <GridItem colSpan={{ base: 3, md: 1 }}>
             <FormControl>
               <FormLabel>Auto Clock In</FormLabel>
               <div className={style.timepicker}>
@@ -137,7 +161,7 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
               </div>
             </FormControl>
           </GridItem>
-          <GridItem colSpan={6}>
+          <GridItem colSpan={{ base: 3, md: 1 }}>
             <FormControl>
               <FormLabel>Auto Clock Out</FormLabel>
               <div className={style.timepicker}>
@@ -153,7 +177,31 @@ function AutoClockSettingForm(props: AutoClockSettingFormProps) {
               </div>
             </FormControl>
           </GridItem>
-          <GridItem colSpan={12}>
+          <GridItem colSpan={{ base: 3, md: 1 }}>
+            <FormControl>
+              <FormLabel>Timezone</FormLabel>
+              {/* <Select
+                value={timezoneSelect}
+                onChange={(e) => onTimezoneChange(e.target.value)}
+              >
+                {getTimezoneUTCList().map((timezone) => (
+                  <option key={timezone.value} value={timezone.value}>
+                    {timezone.value}
+                  </option>
+                ))}
+              </Select> */}
+              <SelectSearch
+                search={true}
+                options={getTimezoneSelectList()}
+                value={timezoneSelect}
+                placeholder="Choose timezone"
+                onChange={(e) => onTimezoneChange(e.toString())}
+                onBlur={() => {}}
+                onFocus={() => {}}
+              />
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={3}>
             <br />
             <Center>
               <CheckboxGroup

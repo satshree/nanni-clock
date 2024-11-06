@@ -11,6 +11,10 @@ export type AutoClockType = {
   autoClockStart: string;
   autoDailyClock: string[];
   home: string;
+  timezone?: {
+    value: string;
+    offset: number;
+  };
 };
 
 export type FamilyType = {

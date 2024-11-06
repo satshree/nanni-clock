@@ -97,6 +97,10 @@ export async function getAutoClockSettings(
     autoClockStart: "",
     autoDailyClock: [],
     home: "",
+    timezone: {
+      value: "",
+      offset: 0,
+    },
   };
 
   try {
@@ -112,7 +116,11 @@ export async function getAutoClockSettings(
         autoClockStart: settings.data().autoClockStart,
         autoDailyClock: settings.data().autoDailyClock,
         home: settings.data().home,
+        // timezone: settings.data().timezone,
       };
+
+      if (settings.data().timezone)
+        clockSettings.timezone = settings.data().timezone;
     });
   } catch (error) {
     console.log("ERROR", error);
