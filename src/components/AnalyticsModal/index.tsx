@@ -69,13 +69,9 @@ export default function AnalyticsModal(props: AnalyticsModalProps) {
   useEffect(() => setTotalData(props.data.total), [props.data.total]);
   useEffect(() => {
     setMonthlyData(props.data.monthly);
-    setShowMonth(Object.keys(monthlyData)[0]);
+    // setShowMonth(Object.keys(monthlyData)[0]);
   }, [props.data.monthly]);
   useEffect(() => setDailyData(props.data.daily), [props.data.daily]);
-
-  useEffect(() => {
-    console.log("show", showMonth);
-  }, []);
 
   const getDailyData = () => {
     let data: {
